@@ -1,4 +1,4 @@
 {
-  "installCommand": "npm install --legacy-peer-deps --force",
-  "buildCommand": "npm run build"
+  "installCommand": "npm install --legacy-peer-deps",
+  "buildCommand": "npm install typescript @types/react --legacy-peer-deps && npm run build"
 }
