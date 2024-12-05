@@ -1,14 +1,12 @@
-const { getSpotifyToken } = require("../../lib/spotify");
+import getSpotifyToken from "../../lib/spotify";
 
 export default async function handler(req, res) {
   try {
     const token = await getSpotifyToken();
 
-    // Check for a specific podcast ID
     const { id, q = "technology", limit = 20, offset = 0 } = req.query;
 
     if (id) {
-      // Fetch details of a specific podcast
       const response = await fetch(`https://api.spotify.com/v1/shows/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -29,7 +27,6 @@ export default async function handler(req, res) {
         image: podcast.images[0]?.url || "",
       });
     } else {
-      // Fetch a list of podcasts with pagination
       const response = await fetch(
         `https://api.spotify.com/v1/search?q=${encodeURIComponent(
           q
