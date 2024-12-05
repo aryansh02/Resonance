@@ -22,14 +22,12 @@ export default async function handler(req, res) {
     ],
   };
 
-  // Helper function to parse and clean raw text
   function parseInsights(rawText) {
     const cleanedLines = rawText
       .split("\n")
       .map((line) => line.trim())
-      .filter((line) => line.length > 20 && !line.startsWith("Citation:")); // Remove very short or irrelevant lines
+      .filter((line) => line.length > 20 && !line.startsWith("Citation:"));
 
-    // Remove the first line if multiple lines exist
     return cleanedLines.length > 1
       ? cleanedLines.slice(1)
       : mockResponse.insights;
@@ -50,7 +48,7 @@ export default async function handler(req, res) {
       console.error("Hugging Face API Error:", errorData);
       return res.status(response.status).json({
         error: errorData.error || "Loading",
-        insights: mockResponse.insights, // Return mock insights in case of API error
+        insights: mockResponse.insights,
       });
     }
 
@@ -68,7 +66,7 @@ export default async function handler(req, res) {
     );
     res.status(503).json({
       error: "Failed to generate insights due to an API error.",
-      insights: mockResponse.insights, // Return fallback insights
+      insights: mockResponse.insights,
       details: error.message,
     });
   }

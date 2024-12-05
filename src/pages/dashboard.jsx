@@ -14,7 +14,6 @@ import {
 
 import { Bar, Pie, Line } from "react-chartjs-2";
 
-// Register Chart.js components
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -27,7 +26,6 @@ ChartJS.register(
   LineElement
 );
 
-// Bar Chart Data and Options
 const barData = {
   labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
   datasets: [
@@ -45,7 +43,7 @@ const barOptions = {
   responsive: true,
   plugins: {
     legend: {
-      position: "top" as const,
+      position: "top",
     },
     title: {
       display: true,
@@ -54,7 +52,6 @@ const barOptions = {
   },
 };
 
-// Pie Chart Data and Options
 const pieData = {
   labels: ["Technology", "Health", "Business", "Education", "Lifestyle"],
   datasets: [
@@ -84,7 +81,7 @@ const pieOptions = {
   responsive: true,
   plugins: {
     legend: {
-      position: "right" as const,
+      position: "right",
     },
     title: {
       display: true,
@@ -93,7 +90,6 @@ const pieOptions = {
   },
 };
 
-// Line Chart Data and Options
 const lineData = {
   labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
   datasets: [
@@ -112,7 +108,7 @@ const lineOptions = {
   responsive: true,
   plugins: {
     legend: {
-      position: "top" as const,
+      position: "top",
     },
     title: {
       display: true,
@@ -124,19 +120,18 @@ const lineOptions = {
 const Dashboard = () => {
   return (
     <div className="p-8 mb-12 min-h-screen bg-black text-white">
-      <h1 className="text-4xl font-bold mb-12 text-center">Podcast Analytics Dashboard</h1>
+      <h1 className="text-4xl font-bold mb-12 text-center">
+        Podcast Analytics Dashboard
+      </h1>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {/* Bar Chart */}
         <div className="bg-white p-6 rounded-xl shadow-md">
           <Bar data={barData} options={barOptions} />
         </div>
 
-        {/* Pie Chart */}
         <div className="bg-white p-6 rounded-xl shadow-md">
           <Pie data={pieData} options={pieOptions} />
         </div>
 
-        {/* Line Chart */}
         <div className="bg-white p-6 rounded-xl shadow-md">
           <Line data={lineData} options={lineOptions} />
         </div>

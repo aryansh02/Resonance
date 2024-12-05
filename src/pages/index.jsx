@@ -4,16 +4,14 @@ import Link from "next/link";
 const LandingPage = () => {
   const [email, setEmail] = useState("");
 
-  
-  const handleEmailSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleEmailSubmit = (e) => {
     e.preventDefault();
     console.log("Email submitted:", email);
-    
   };
 
   return (
     <div className="text-white min-h-screen">
-      
+      {/* Header */}
       <header className="fixed top-0 w-full bg-black z-50 p-4 shadow-md">
         <nav className="flex items-center justify-between px-8">
           <div
@@ -43,7 +41,7 @@ const LandingPage = () => {
           }
 
           .gradient-underline:hover {
-            color: white; /* Ensures text remains white */
+            color: white;
           }
 
           .gradient-underline::after {
@@ -63,7 +61,7 @@ const LandingPage = () => {
         `}</style>
       </header>
 
-      
+      {/* Animated Gradient Section */}
       <div
         className="pt-16"
         style={{
@@ -98,7 +96,7 @@ const LandingPage = () => {
           }
         `}</style>
 
-        
+        {/* Main Hero Section */}
         <section className="flex items-center justify-center h-screen text-center">
           <div>
             <h1
@@ -127,7 +125,7 @@ const LandingPage = () => {
           </div>
         </section>
 
-        
+        {/* Features Section */}
         <section className="py-16">
           <div className="max-w-6xl mx-auto px-8 text-center">
             <h2
@@ -137,26 +135,19 @@ const LandingPage = () => {
               What Sets Us Apart
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              
-              <div
-                className="mt-12 p-16 bg-black bg-opacity-40 rounded-lg shadow-md transform transition duration-500 hover:scale-105"
-              >
+              <div className="mt-12 p-16 bg-black bg-opacity-40 rounded-lg shadow-md transform transition duration-500 hover:scale-105">
                 <h3 className="text-xl font-semibold mb-4">Unrivaled Insights</h3>
                 <p className="text-gray-300">
                   Leverage cutting-edge AI to understand your audience and grow smarter.
                 </p>
               </div>
-              <div
-                className="mt-12 p-16 bg-black bg-opacity-40 rounded-lg shadow-md transform transition duration-500 hover:scale-105"
-              >
+              <div className="mt-12 p-16 bg-black bg-opacity-40 rounded-lg shadow-md transform transition duration-500 hover:scale-105">
                 <h3 className="text-xl font-semibold mb-4">Refined Visuals</h3>
                 <p className="text-gray-300">
                   Transform raw numbers into actionable visuals for faster decisions.
                 </p>
               </div>
-              <div
-                className="mt-12 p-16 bg-black bg-opacity-40 rounded-lg shadow-md transform transition duration-500 hover:scale-105"
-              >
+              <div className="mt-12 p-16 bg-black bg-opacity-40 rounded-lg shadow-md transform transition duration-500 hover:scale-105">
                 <h3 className="text-xl font-semibold mb-4">Seamless Analytics</h3>
                 <p className="text-gray-300">
                   Tools designed to make podcast analytics effortless.
@@ -166,7 +157,7 @@ const LandingPage = () => {
           </div>
         </section>
 
-        
+        {/* Email Subscription Section */}
         <section className="py-64">
           <div className="max-w-3xl mx-auto text-center">
             <h2
@@ -202,13 +193,7 @@ const LandingPage = () => {
         </section>
       </div>
 
-      <section className="py-4 text-center">
-        <p className="text-sm text-gray-400">
-          This is an MVP (Minimum Viable Product). Features and functionality are still in development.
-        </p>
-      </section>
-
-      
+      {/* Footer */}
       <footer className="bg-black text-white py-8 text-center">
         <p className="text-lg">Developed by Aryansh</p>
         <p className="mt-6">© 2024 Resonance. All rights reserved.</p>
