@@ -20,8 +20,9 @@ export default function PodcastListing() {
             (currentPage - 1) * podcastsPerPage
           }`
         );
-        if (!response.ok) throw new Error("Failed to fetch podcasts");
         const data = await response.json();
+        if (!response.ok)
+          throw new Error(data.error || "Failed to fetch podcasts");
         setPodcasts(data);
       } catch (err) {
         setError(err.message);
