@@ -1,6 +1,6 @@
-require("dotenv").config({ path: ".env.local" }); // Load environment variables
+require("dotenv").config({ path: ".env.local" });
 
-const { getSpotifyToken } = require("../../lib/spotify");
+import getSpotifyToken from "../../lib/spotify";
 
 (async () => {
   try {

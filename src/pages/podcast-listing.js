@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { TailSpin } from "react-loader-spinner";
+import Image from "next/image";
 
 export default function PodcastListing() {
   const [podcasts, setPodcasts] = useState([]);
@@ -58,9 +59,12 @@ export default function PodcastListing() {
             className="p-4 bg-gray-800 border border-gray-700 rounded-xl shadow-md hover:shadow-lg transition-shadow cursor-pointer"
           >
             <Link href={`/podcast/${podcast.id}`}>
-              <img
+              {/* Directly use Image without <a> */}
+              <Image
                 src={podcast.image}
                 alt={podcast.title}
+                width={300} // Provide default width
+                height={300} // Provide default height
                 className="mb-4 w-full h-48 object-cover rounded-lg"
               />
             </Link>

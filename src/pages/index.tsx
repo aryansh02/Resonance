@@ -188,7 +188,7 @@ const LandingPage = () => {
                 placeholder="Enter your email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="px-4 py-2 rounded-lg w-80 bg-gray-300 text-gray-400 placeholder-gray-400"
+                className="px-4 py-2 rounded-lg w-80 bg-gray-300 text-gray-700 placeholder-gray-500"
                 required
               />
               <button

@@ -1,18 +1,18 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { TailSpin } from "react-loader-spinner";
+import Image from "next/image";
 
 export default function PodcastDetails() {
   const router = useRouter();
-  const { id } = router.query; // Get the podcast ID from the URL
+  const { id } = router.query;
   const [podcast, setPodcast] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [insights, setInsights] = useState([]); // AI-Generated Insights
+  const [insights, setInsights] = useState([]);
 
-  // Fetch Podcast Details
   useEffect(() => {
-    if (!id) return; // Wait until `id` is available
+    if (!id) return;
     async function fetchPodcastDetails() {
       try {
         const response = await fetch(`/api/getPodcasts?id=${id}`);
@@ -28,19 +28,18 @@ export default function PodcastDetails() {
     fetchPodcastDetails();
   }, [id]);
 
-  // Fetch AI-Generated Insights
   useEffect(() => {
-    if (!id) return; // Wait until `id` is available
+    if (!id) return;
     async function fetchInsights() {
       try {
         const response = await fetch(`/api/getInsights?id=${id}`);
         if (!response.ok) throw new Error("Failed to fetch insights");
         const data = await response.json();
-        console.log("Insights Fetched:", data); // Debugging
-        setInsights(data.insights || []); // Safeguard against undefined insights
+        console.log("Insights Fetched:", data);
+        setInsights(data.insights || []);
       } catch (err) {
         console.error("Error fetching insights:", err.message);
-        setInsights(["Error fetching insights. Please try again later."]); // Display fallback error
+        setInsights(["Error fetching insights. Please try again later."]);
       }
     }
     fetchInsights();
@@ -76,10 +75,12 @@ export default function PodcastDetails() {
         {podcast.title}
       </h1>
       <div className="flex justify-center">
-        <img
+        <Image
           src={podcast.image}
           alt={podcast.title}
-          className="w-full max-w-4xl object-contain rounded-lg"
+          width={600} // Specify the width
+          height={400} // Specify the height
+          className="object-contain rounded-lg"
         />
       </div>
       <p className="mt-10 text-lg text-white">{podcast.description}</p>
@@ -87,7 +88,7 @@ export default function PodcastDetails() {
         <h2
           className="text-2xl font-bold text-white"
           style={{
-            fontFamily: "'Bungee Spice', cursive", // Apply custom font to the heading
+            fontFamily: "'Bungee Spice', cursive",
           }}
         >
           AI-Generated Insights
@@ -96,9 +97,9 @@ export default function PodcastDetails() {
           <ul
             className="mt-4 list-disc pl-6"
             style={{
-              fontStyle: "italic", // Italic text
-              fontSize: "1.25rem", // Larger font size
-              color: "#d1d5db", // Light gray color
+              fontStyle: "italic",
+              fontSize: "1.25rem",
+              color: "#d1d5db",
             }}
           >
             {insights.map((insight, index) => (
@@ -109,9 +110,9 @@ export default function PodcastDetails() {
           <p
             className="mt-4"
             style={{
-              fontStyle: "italic", // Italic text
-              fontSize: "1.25rem", // Larger font size
-              color: "#d1d5db", // Light gray color
+              fontStyle: "italic",
+              fontSize: "1.25rem",
+              color: "#d1d5db",
             }}
           >
             Loading...

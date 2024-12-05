@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { mockCharts } from "../lib/mockCharts";
+import Image from "next/image";
 
 const placeholderImage = "https://via.placeholder.com/64";
 
@@ -30,20 +31,20 @@ const Charts = () => {
             key={podcast.rank}
             className="bg-white rounded-lg shadow-lg p-4 w-full max-w-2xl flex items-center gap-4"
           >
-            {/* Rank */}
             <span className="text-3xl font-bold text-gray-800">
               {podcast.rank}
             </span>
-            {/* Podcast Image */}
-            <img
-              src={podcast.image || placeholderImage} // Use placeholder if image is missing
-              onError={(e) => {
-                e.target.src = placeholderImage; // Fallback for broken image URLs
-              }}
-              alt={podcast.title}
-              className="w-24 h-24 object-contain rounded-full"
-            />
-            {/* Podcast Info */}
+
+            <div className="w-24 h-24 relative">
+              <Image
+                src={podcast.image || placeholderImage}
+                alt={podcast.title}
+                layout="fill"
+                objectFit="contain"
+                className="rounded-full"
+              />
+            </div>
+
             <div>
               <h2 className="text-xl font-semibold">{podcast.title}</h2>
               <p className="text-gray-600 text-sm">{podcast.description}</p>
@@ -52,7 +53,7 @@ const Charts = () => {
           </div>
         ))}
       </div>
-      {/* Pagination */}
+
       <div className="flex justify-center gap-4 mt-8">
         <button
           onClick={handlePrevPage}
