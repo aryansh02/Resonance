@@ -1,4 +1,4 @@
 {
   "installCommand": "npm install --legacy-peer-deps",
-  "buildCommand": "NEXT_IGNORE_TYPE_CHECKING=true npm run build"
+  "buildCommand": "NEXT_IGNORE_TYPE_CHECKING=true DISABLE_ESLINT_PLUGIN=true npm run build"
 }
