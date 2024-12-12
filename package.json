@@ -22,7 +22,6 @@
     "react-loader-spinner": "6.1.6"
   },
   "devDependencies": {
-    
     "autoprefixer": "^10.4.20",
     "eslint": "^8",
     "eslint-config-next": "15.0.3",
