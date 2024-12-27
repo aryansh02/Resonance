@@ -10,6 +10,7 @@ export default function PodcastDetails() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [insights, setInsights] = useState([]);
+  const [insightsLoading, setInsightsLoading] = useState(true);
 
   useEffect(() => {
     if (!id) return;
@@ -31,6 +32,7 @@ export default function PodcastDetails() {
   useEffect(() => {
     if (!id) return;
     async function fetchInsights() {
+      setInsightsLoading(true);
       try {
         const response = await fetch(`/api/getInsights?id=${id}`);
         if (!response.ok) throw new Error("Failed to fetch insights");
@@ -40,6 +42,8 @@ export default function PodcastDetails() {
       } catch (err) {
         console.error("Error fetching insights:", err.message);
         setInsights(["Error fetching insights. Please try again later."]);
+      } finally {
+        setInsightsLoading(false);
       }
     }
     fetchInsights();
@@ -70,52 +74,78 @@ export default function PodcastDetails() {
   }
 
   return (
-    <div className="p-8">
-      <h1 className="text-4xl font-bold mb-10 text-white text-center">
+    <div className="p-8 min-h-screen bg-gradient-to-b from-blue-800 via-blue-900 to-black text-white">
+      <h1 className="text-4xl font-extrabold mb-12 text-center">
         {podcast.title}
       </h1>
-      <div className="flex justify-center">
-        <Image
-          src={podcast.image}
-          alt={podcast.title}
-          width={600} // Specify the width
-          height={400} // Specify the height
-          className="object-contain rounded-lg"
-        />
+
+      <div className="flex flex-col md:flex-row items-center gap-10">
+        <div className="flex-shrink-0">
+          <Image
+            src={podcast.image}
+            alt={podcast.title}
+            width={300}
+            height={300}
+            className="rounded-lg shadow-lg"
+          />
+        </div>
+        <div>
+          <p className="text-lg leading-7 text-gray-300 max-w-2xl mb-12 mt-16">
+            {podcast.description}
+          </p>
+
+          <div className="mt-4">
+            <h3 className="text-xl font-semibold text-gray-400 mb-2">
+              Podcast Details:
+            </h3>
+            <ul className="list-disc pl-6 text-gray-300">
+              <li>
+                <span className="font-bold text-gray-200">
+                  Number of Episodes:
+                </span>{" "}
+                {podcast.episodes || "N/A"}
+              </li>
+              <li>
+                <span className="font-bold text-gray-200">
+                  Release Frequency:
+                </span>{" "}
+                {podcast.releaseFrequency || "N/A"}
+              </li>
+              <li>
+                <span className="font-bold text-gray-200">
+                  Average Duration:
+                </span>{" "}
+                {podcast.averageDuration || "N/A"}
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <p className="mt-10 text-lg text-white">{podcast.description}</p>
-      <div className="mt-10">
-        <h2
-          className="text-2xl font-bold text-white"
-          style={{
-            fontFamily: "'Bungee Spice', cursive",
-          }}
-        >
+
+      <div className="mt-16">
+        <h2 className="text-2xl font-bold mb-6 text-sky-400">
           AI-Generated Insights
         </h2>
-        {insights.length > 0 ? (
-          <ul
-            className="mt-4 list-disc pl-6"
-            style={{
-              fontStyle: "italic",
-              fontSize: "1.25rem",
-              color: "#d1d5db",
-            }}
-          >
+        {insightsLoading ? (
+          <div className="flex justify-center items-center">
+            <TailSpin
+              height="40"
+              width="40"
+              color="#00BFFF"
+              ariaLabel="loading"
+            />
+          </div>
+        ) : insights.length > 0 ? (
+          <ul className="mt-4 space-y-2">
             {insights.map((insight, index) => (
-              <li key={index}>{insight}</li>
+              <li key={index} className="text-gray-300 leading-6">
+                {insight}
+              </li>
             ))}
           </ul>
         ) : (
-          <p
-            className="mt-4"
-            style={{
-              fontStyle: "italic",
-              fontSize: "1.25rem",
-              color: "#d1d5db",
-            }}
-          >
-            Loading...
+          <p className="text-gray-500 italic">
+            No insights available at the moment.
           </p>
         )}
       </div>
