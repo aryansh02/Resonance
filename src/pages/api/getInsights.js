@@ -20,7 +20,7 @@ async function fetchPodcastDetails(id) {
     return {
       title: podcast.name,
       description: podcast.description,
-      category: podcast.publisher || "General", // Use publisher as category if available
+      category: podcast.publisher || "General",
     };
   } catch (error) {
     console.error("Error fetching podcast details:", error.message);
@@ -35,7 +35,6 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Podcast ID is required" });
   }
 
-  // Mock fallback data
   const mockResponse = {
     id,
     insights: [
