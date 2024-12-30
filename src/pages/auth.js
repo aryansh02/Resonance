@@ -12,7 +12,7 @@ export default function AuthPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
-  const [isLogin, setIsLogin] = useState(false); // Toggle between login and sign-up
+  const [isLogin, setIsLogin] = useState(false); 
   const router = useRouter();
 
   const handleSignUp = async () => {
@@ -85,16 +85,16 @@ export default function AuthPage() {
 
         {error && <p className="text-red-500 mb-4 text-center">{error}</p>}
 
-        {/* OAuth Buttons */}
+        
         <div className="flex gap-4 justify-center mb-6">
           <button
             onClick={handleGoogleSignIn}
             className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-lg shadow hover:bg-gray-200"
           >
             <img
-              src="/Google.svg" // Updated: Path to the Google logo in public folder
+              src="/Google.svg" 
               alt="Google"
-              className="w-5 h-5" // Google Icon
+              className="w-5 h-5"
             />
             Google
           </button>
@@ -106,7 +106,7 @@ export default function AuthPage() {
           <span className="flex-grow border-t border-gray-600"></span>
         </div>
 
-        {/* Email and Password Form */}
+        
         <input
           type="email"
           placeholder="Email"
@@ -129,7 +129,7 @@ export default function AuthPage() {
           {isLogin ? "Login" : "Create account"}
         </button>
 
-        {/* Toggle Between Login and Sign-Up */}
+        
         <p className="text-gray-400 mt-6 text-center">
           {isLogin ? "Don't have an account? " : "Already have an account? "}
           <span
