@@ -140,7 +140,7 @@ export default function PodcastListing() {
         </div>
       </div>
 
-      {/* Podcast Cards */}
+      
       {loading ? (
         <div className="flex justify-center items-center min-h-[50vh]">
           <TailSpin
@@ -167,7 +167,7 @@ export default function PodcastListing() {
               key={podcast.id}
               className="p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:border-purple-500 border border-transparent transition-transform transform hover:scale-105"
               style={{
-                backgroundColor: "rgba(0, 0, 0, 0.6)", // Semi-transparent
+                backgroundColor: "rgba(0, 0, 0, 0.6)", 
               }}
             >
               <Link href={`/podcast/${podcast.id}`}>
@@ -199,7 +199,7 @@ export default function PodcastListing() {
         </div>
       )}
 
-      {/* Pagination */}
+      
       <div className="flex justify-between items-center mt-8">
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
