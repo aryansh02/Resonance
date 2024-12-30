@@ -8,13 +8,12 @@ const Dashboard = () => {
 
   useEffect(() => {
     if (!user) {
-      router.push("/auth"); // Redirect to auth page if not logged in
+      router.push("/auth");
     }
   }, [user, router]);
 
   return user ? (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white p-8">
-      {/* Header */}
       <header className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-extrabold">Welcome, {user.email}</h1>
         <button
@@ -25,9 +24,7 @@ const Dashboard = () => {
         </button>
       </header>
 
-      {/* Dashboard Sections */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-        {/* Account Information */}
         <div className="p-6 bg-black rounded-xl shadow-md hover:shadow-lg transition h-56 flex flex-col justify-between">
           <div>
             <h2 className="text-xl font-bold mb-4">Account Information</h2>
@@ -43,7 +40,6 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Settings */}
         <div className="p-6 bg-black rounded-xl shadow-md hover:shadow-lg transition h-56 flex flex-col justify-between">
           <div>
             <h2 className="text-xl font-bold mb-4">Settings</h2>
@@ -54,7 +50,6 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Preferences */}
         <div className="p-6 bg-black rounded-xl shadow-md hover:shadow-lg transition h-56 flex flex-col justify-between">
           <div>
             <h2 className="text-xl font-bold mb-4">Preferences</h2>
@@ -66,7 +61,6 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Quick Links (Aligned with Dashboard Sections) */}
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mt-8">
         <div className="p-6 bg-black rounded-xl shadow-md hover:shadow-lg transition h-56 flex flex-col justify-between">
           <div>
@@ -101,9 +95,14 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="mt-12 text-center text-gray-400">
-        <p>&copy; 2024 Resonance. All Rights Reserved.</p>
+      <footer className="bg-semi-transparent text-white text-center mt-24 pt-8 pb-8">
+        <p className="text-lg">Developed by Aryansh</p>
+        <p className="mt-6">© 2024 Resonance. All rights reserved.</p>
+        <div className="mt-6 flex justify-center gap-4">
+          <p>About</p>
+          <p>Contact</p>
+          <p>Privacy Policy</p>
+        </div>
       </footer>
     </div>
   ) : null;
