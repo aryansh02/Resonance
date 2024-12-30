@@ -62,7 +62,29 @@ export default function PodcastListing() {
   ];
 
   return (
-    <div className="p-8 min-h-screen bg-gradient-to-b from-blue-700 via-indigo-900 to-black text-white">
+    <div
+      className="p-8 min-h-screen text-white"
+      style={{
+        background:
+          "linear-gradient(90deg, #2D00F7, #6A00F4, #8900F2, #B100E8, #F20089)",
+        backgroundSize: "200% 200%",
+        animation: "bounceGradientAnimation 8s ease-in-out infinite",
+      }}
+    >
+      <style jsx>{`
+        @keyframes bounceGradientAnimation {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+      `}</style>
+
       <h1 className="text-4xl font-semi-bold text-center mb-16 mt-8">
         Podcasts
       </h1>
@@ -143,10 +165,13 @@ export default function PodcastListing() {
           {podcasts.map((podcast) => (
             <div
               key={podcast.id}
-              className="p-6 bg-gray-900 rounded-2xl shadow-lg hover:shadow-2xl hover:border-blue-500 border border-transparent transition-transform transform hover:scale-105"
+              className="p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:border-purple-500 border border-transparent transition-transform transform hover:scale-105"
+              style={{
+                backgroundColor: "rgba(0, 0, 0, 0.6)", // Semi-transparent
+              }}
             >
               <Link href={`/podcast/${podcast.id}`}>
-                <div className="w-full h-48 relative mb-4">
+                <div className="w-full h-48 relative mb-4 cursor-pointer">
                   <Image
                     src={podcast.image}
                     alt={podcast.title}
@@ -163,9 +188,11 @@ export default function PodcastListing() {
                 {podcast.description.substring(0, 100)}...
               </p>
               <div className="flex justify-center">
-                <button className="px-4 py-2 bg-blue-600 rounded-2xl text-white hover:bg-blue-700">
-                  Play Now
-                </button>
+                <Link href={`/podcast/${podcast.id}`}>
+                  <button className="px-4 py-2 bg-purple-600 rounded-2xl text-white hover:bg-purple-800">
+                    Play Now
+                  </button>
+                </Link>
               </div>
             </div>
           ))}

@@ -51,7 +51,15 @@ const Charts = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-400 via-blue-500 to-blue-600 text-white flex items-center justify-center">
+      <div
+        className="min-h-screen flex items-center justify-center text-white"
+        style={{
+          background:
+            "linear-gradient(180deg, #0B132B, #00171F, #003459, #007EA7, #00A8E8)",
+          backgroundSize: "100% 300%",
+          animation: "chartsGradientAnimation 12s linear infinite",
+        }}
+      >
         <TailSpin height="60" width="60" color="#00BFFF" ariaLabel="loading" />
       </div>
     );
@@ -59,15 +67,45 @@ const Charts = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-b from-green-400 via-blue-500 to-blue-600 text-white flex items-center justify-center">
+      <div
+        className="min-h-screen flex items-center justify-center text-white"
+        style={{
+          background:
+            "linear-gradient(180deg, #0B132B, #00171F, #003459, #007EA7, #00A8E8)",
+          backgroundSize: "100% 300%",
+          animation: "chartsGradientAnimation 12s linear infinite",
+        }}
+      >
         <p>Error: {error}</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-green-400 via-blue-500 to-blue-600 text-black p-8">
-      <h1 className="text-4xl font-semi-bold mb-24 mt-16 text-center text-shadow-lg">
+    <div
+      className="min-h-screen p-8 text-black"
+      style={{
+        background:
+          "linear-gradient(180deg, #0B132B, #00171F, #003459, #007EA7, #00A8E8)",
+        backgroundSize: "100% 300%",
+        animation: "chartsGradientAnimation 15s linear infinite",
+      }}
+    >
+      <style jsx>{`
+        @keyframes chartsGradientAnimation {
+          0% {
+            background-position: 50% 0%;
+          }
+          50% {
+            background-position: 50% 100%;
+          }
+          100% {
+            background-position: 50% 0%;
+          }
+        }
+      `}</style>
+
+      <h1 className="text-4xl font-semi-bold mb-24 mt-16 text-center text-shadow-lg text-white">
         Top Podcasts on Spotify
       </h1>
 
@@ -75,19 +113,20 @@ const Charts = () => {
         {currentData.map((podcast, index) => (
           <div
             key={podcast.id}
-            className="bg-black p-6 rounded-xl shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
+            className="p-6 rounded-3xl shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
+            style={{
+              backgroundColor: "rgba(255, 255, 255, 0.2)", // Semi-transparent
+            }}
           >
-            {/* Rank */}
             <div className="flex justify-between items-center">
               <span className="text-2xl font-bold text-white">
                 #{index + 1 + (currentPage - 1) * itemsPerPage}
               </span>
-              <span className="text-sm bg-sky-500 text-black px-2 py-1 rounded-full">
+              <span className="text-sm bg-white text-black px-2 py-1 rounded-full">
                 {podcast.publisher}
               </span>
             </div>
 
-            {/* Image */}
             <div className="w-24 h-24 relative mx-auto my-4">
               <Image
                 src={podcast.image || placeholderImage}
@@ -98,7 +137,6 @@ const Charts = () => {
               />
             </div>
 
-            {/* Podcast Details */}
             <h2 className="text-xl font-semibold text-center text-white">
               {podcast.title}
             </h2>
@@ -109,7 +147,6 @@ const Charts = () => {
         ))}
       </div>
 
-      {/* Pagination */}
       <div className="flex justify-center items-center gap-4 mt-8">
         <button
           onClick={handlePrevPage}

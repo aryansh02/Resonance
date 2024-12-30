@@ -1,13 +1,17 @@
 import React, { useState } from "react";
 import Link from "next/link";
+import { useAuth } from "../context/AuthContext";
 
 const LandingPage = () => {
   const [email, setEmail] = useState("");
+  const { user } = useAuth(); // Access user from AuthContext
 
   const handleEmailSubmit = (e) => {
     e.preventDefault();
     console.log("Email submitted:", email);
   };
+
+  const getStartedLink = user ? "/podcast-listing" : "/auth";
 
   return (
     <div className="text-white min-h-screen">
@@ -21,15 +25,26 @@ const LandingPage = () => {
             <Link href="/">Resonance</Link>
           </div>
           <div className="flex gap-6 text-xl font-bold">
-            <Link href="/podcast-listing" className="gradient-underline">
-              Podcasts
-            </Link>
-            <Link href="/charts" className="gradient-underline">
-              Charts
-            </Link>
-            <Link href="/dashboard" className="gradient-underline">
-              Dashboard
-            </Link>
+            {user ? (
+              <>
+                <Link href="/podcast-listing" className="gradient-underline">
+                  Podcasts
+                </Link>
+                <Link href="/charts" className="gradient-underline">
+                  Charts
+                </Link>
+                <Link href="/analytics" className="gradient-underline">
+                  Analytics
+                </Link>
+                <Link href="/dashboard" className="gradient-underline">
+                  Dashboard
+                </Link>
+              </>
+            ) : (
+              <Link href="/auth" className="gradient-underline">
+                Sign In
+              </Link>
+            )}
           </div>
         </nav>
         <style jsx>{`
@@ -112,12 +127,12 @@ const LandingPage = () => {
               Coming Soon
             </h1>
             <p className="mt-10 text-lg text-gray-300 mb-8">
-              AI-powered insights, analytics, and visualizations to transform your
-              podcast growth.
+              AI-powered insights, analytics, and visualizations to transform
+              your podcast growth.
             </p>
             <div>
-              <Link href="/podcast-listing">
-                <button className="mt-16 bg-blue-600 px-6 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700">
+              <Link href={getStartedLink}>
+                <button className="mt-16 bg-gradient-to-r from-blue-500 to-purple-500 px-6 py-3 rounded-lg text-lg font-semibold hover:opacity-90 shadow-lg">
                   Get Started
                 </button>
               </Link>
@@ -135,24 +150,52 @@ const LandingPage = () => {
               What Sets Us Apart
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div className="mt-12 p-16 bg-black bg-opacity-40 rounded-lg shadow-md transform transition duration-500 hover:scale-105">
+              <div className="mt-12 p-16 bg-gray-800 bg-opacity-70 backdrop-blur-md rounded-lg shadow-md transform transition duration-500 hover:scale-105">
                 <h3 className="text-xl font-semibold mb-4">Unrivaled Insights</h3>
                 <p className="text-gray-300">
-                  Leverage cutting-edge AI to understand your audience and grow smarter.
+                  Leverage cutting-edge AI to understand your audience and grow
+                  smarter.
                 </p>
               </div>
-              <div className="mt-12 p-16 bg-black bg-opacity-40 rounded-lg shadow-md transform transition duration-500 hover:scale-105">
+              <div className="mt-12 p-16 bg-gray-800 bg-opacity-70 backdrop-blur-md rounded-lg shadow-md transform transition duration-500 hover:scale-105">
                 <h3 className="text-xl font-semibold mb-4">Refined Visuals</h3>
                 <p className="text-gray-300">
-                  Transform raw numbers into actionable visuals for faster decisions.
+                  Transform raw numbers into actionable visuals for faster
+                  decisions.
                 </p>
               </div>
-              <div className="mt-12 p-16 bg-black bg-opacity-40 rounded-lg shadow-md transform transition duration-500 hover:scale-105">
+              <div className="mt-12 p-16 bg-gray-800 bg-opacity-70 backdrop-blur-md rounded-lg shadow-md transform transition duration-500 hover:scale-105">
                 <h3 className="text-xl font-semibold mb-4">Seamless Analytics</h3>
                 <p className="text-gray-300">
                   Tools designed to make podcast analytics effortless.
                 </p>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials Section */}
+        <section className="py-24 bg-semi-transparent text-white">
+          <div className="max-w-6xl mx-auto px-8 text-center">
+            <h2 className="text-4xl font-bold mb-8">What Our Users Say</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              <blockquote className="p-8 bg-gray-800 bg-opacity-70 backdrop-blur-md rounded-lg shadow-md">
+                <p className="italic mb-4">
+                  "Resonance transformed how I understand my audience. Highly
+                  recommend!"
+                </p>
+              </blockquote>
+              <blockquote className="p-8 bg-gray-800 bg-opacity-70 backdrop-blur-md rounded-lg shadow-md">
+                <p className="italic mb-4">
+                  "Amazing insights! Resonance has been a game-changer for my
+                  podcast."
+                </p>
+              </blockquote>
+              <blockquote className="p-8 bg-gray-800 bg-opacity-70 backdrop-blur-md rounded-lg shadow-md">
+                <p className="italic mb-4">
+                  "Seamless analytics that makes understanding data effortless!"
+                </p>
+              </blockquote>
             </div>
           </div>
         </section>
@@ -184,7 +227,7 @@ const LandingPage = () => {
               />
               <button
                 type="submit"
-                className="bg-blue-600 px-6 py-2 rounded-lg text-lg font-semibold hover:bg-blue-700"
+                className="bg-gradient-to-r from-blue-500 to-purple-500 px-6 py-2 rounded-lg text-lg font-semibold hover:opacity-90 shadow-lg"
               >
                 Subscribe
               </button>
