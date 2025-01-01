@@ -26,21 +26,13 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
 };
 
-// Initialize Firebase
 const app = initializeApp(firebaseConfig);
 
-// Authentication
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 
-// Firestore
 const db = getFirestore(app);
 
-/**
- * Utility Functions for Firestore
- */
-
-// Add a document to Firestore
 export const addDocument = async (collectionName, documentId, data) => {
   try {
     const docRef = doc(db, collectionName, documentId);
@@ -51,7 +43,6 @@ export const addDocument = async (collectionName, documentId, data) => {
   }
 };
 
-// Fetch documents from a collection
 export const fetchCollection = async (collectionName) => {
   try {
     const colRef = collection(db, collectionName);
@@ -63,7 +54,6 @@ export const fetchCollection = async (collectionName) => {
   }
 };
 
-// Delete a document from Firestore
 export const deleteDocument = async (collectionName, documentId) => {
   try {
     const docRef = doc(db, collectionName, documentId);
@@ -74,7 +64,6 @@ export const deleteDocument = async (collectionName, documentId) => {
   }
 };
 
-// Query a collection with a condition
 export const queryCollection = async (
   collectionName,
   field,
@@ -92,7 +81,6 @@ export const queryCollection = async (
   }
 };
 
-// Authentication State Change Listener
 export const authStateListener = (callback) => {
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -103,7 +91,6 @@ export const authStateListener = (callback) => {
   });
 };
 
-// Logout Function
 export const logoutUser = async () => {
   try {
     await signOut(auth);
