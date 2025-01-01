@@ -4,7 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 const LandingPage = () => {
   const [email, setEmail] = useState("");
-  const { user } = useAuth(); // Access user from AuthContext
+  const { user } = useAuth(); 
 
   const handleEmailSubmit = (e) => {
     e.preventDefault();
@@ -76,7 +76,7 @@ const LandingPage = () => {
         `}</style>
       </header>
 
-      {/* Animated Gradient Section */}
+      
       <div
         className="pt-16"
         style={{
@@ -111,7 +111,7 @@ const LandingPage = () => {
           }
         `}</style>
 
-        {/* Main Hero Section */}
+        
         <section className="flex items-center justify-center h-screen text-center">
           <div>
             <h1
@@ -140,7 +140,7 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Features Section */}
+        
         <section className="py-16">
           <div className="max-w-6xl mx-auto px-8 text-center">
             <h2
@@ -174,7 +174,7 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Testimonials Section */}
+        
         <section className="py-24 bg-semi-transparent text-white">
           <div className="max-w-6xl mx-auto px-8 text-center">
             <h2 className="text-4xl font-bold mb-8">What Our Users Say</h2>
@@ -200,7 +200,7 @@ const LandingPage = () => {
           </div>
         </section>
 
-        {/* Email Subscription Section */}
+        
         <section className="py-64">
           <div className="max-w-3xl mx-auto text-center">
             <h2
@@ -236,7 +236,7 @@ const LandingPage = () => {
         </section>
       </div>
 
-      {/* Footer */}
+      
       <footer className="bg-black text-white py-8 text-center">
         <p className="text-lg">Developed by Aryansh</p>
         <p className="mt-6">© 2024 Resonance. All rights reserved.</p>

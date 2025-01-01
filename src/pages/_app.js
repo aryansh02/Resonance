@@ -15,7 +15,7 @@ export default function MyApp({ Component, pageProps }) {
 }
 
 function Header() {
-  const { user } = useAuth(); // Removed logout as it is no longer required in the header
+  const { user } = useAuth(); 
 
   return (
     <header className="fixed top-0 w-full bg-transparent backdrop-blur-lg z-50 p-4">
@@ -28,7 +28,7 @@ function Header() {
           <Link href="/">Resonance</Link>
         </div>
 
-        {/* Navigation Links */}
+        
         <div
           className="flex items-center gap-6"
           style={{ fontFamily: "'Roboto', sans-serif" }}

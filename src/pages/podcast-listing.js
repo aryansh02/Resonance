@@ -19,8 +19,8 @@ export default function PodcastListing() {
   const [category, setCategory] = useState("All");
   const [filter, setFilter] = useState("Most Popular");
   const [searchQuery, setSearchQuery] = useState("");
-  const { user } = useAuth(); // Get user from AuthContext
-  const [bookmarkedPodcasts, setBookmarkedPodcasts] = useState(new Set()); // Set to store bookmarked podcast IDs
+  const { user } = useAuth();
+  const [bookmarkedPodcasts, setBookmarkedPodcasts] = useState(new Set());
 
   const podcastsPerPage = 20;
 
@@ -42,7 +42,6 @@ export default function PodcastListing() {
       const data = await response.json();
       setPodcasts(data);
 
-      // Fetch bookmark status for all podcasts
       if (user) {
         const bookmarkedSet = new Set();
         for (const podcast of data) {
@@ -77,7 +76,7 @@ export default function PodcastListing() {
       return;
     }
     try {
-      const bookmarkDoc = doc(db, "bookmarks", `${user.uid}_${podcast.id}`); // Unique document for each user and podcast
+      const bookmarkDoc = doc(db, "bookmarks", `${user.uid}_${podcast.id}`);
       await setDoc(bookmarkDoc, {
         userId: user.uid,
         podcastId: podcast.id,
@@ -86,7 +85,7 @@ export default function PodcastListing() {
         podcastDescription: podcast.description,
         createdAt: new Date(),
       });
-      setBookmarkedPodcasts((prev) => new Set(prev).add(podcast.id)); // Update bookmarked set
+      setBookmarkedPodcasts((prev) => new Set(prev).add(podcast.id));
       alert(`${podcast.title} has been bookmarked!`);
     } catch (err) {
       console.error("Error bookmarking podcast:", err);
