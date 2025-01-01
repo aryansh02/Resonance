@@ -9,31 +9,42 @@ const Charts = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [category, setCategory] = useState("All");
+  const [region, setRegion] = useState("India");
+  const [filter, setFilter] = useState("Most Popular");
   const itemsPerPage = 10;
 
-  useEffect(() => {
-    const fetchCharts = async () => {
-      setLoading(true);
-      setError(null);
+  const categories = ["All", "Technology", "Health", "Education", "Business"];
+  const regions = ["India", "US", "UK", "Canada", "Australia"];
+  const filters = ["Most Popular", "Recently Trending"];
 
-      try {
-        const response = await fetch("/api/getPodcastCharts");
-        const data = await response.json();
+  const fetchCharts = async () => {
+    setLoading(true);
+    setError(null);
 
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to fetch charts");
-        }
+    try {
+      const response = await fetch(
+        `/api/getPodcastCharts?limit=${itemsPerPage}&offset=${
+          (currentPage - 1) * itemsPerPage
+        }&category=${category}&region=${region}&filter=${filter}`
+      );
+      const data = await response.json();
 
-        setCharts(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to fetch charts");
       }
-    };
 
+      setCharts(data);
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchCharts();
-  }, []);
+  }, [currentPage, category, region, filter]);
 
   const totalPages = Math.ceil(charts.length / itemsPerPage);
   const currentData = charts.slice(
@@ -109,13 +120,79 @@ const Charts = () => {
         Top Podcasts on Spotify
       </h1>
 
+      {/* Filter Options */}
+      <div className="flex justify-between items-center mb-8">
+        <select
+          value={category}
+          onChange={(e) => {
+            setCategory(e.target.value);
+            setCurrentPage(1);
+          }}
+          className="p-3 bg-gray-800 text-white rounded-lg"
+        >
+          {categories.map((cat) => (
+            <option key={cat} value={cat}>
+              {cat}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={region}
+          onChange={(e) => {
+            setRegion(e.target.value);
+            setCurrentPage(1);
+          }}
+          className="p-3 bg-gray-800 text-white rounded-lg"
+        >
+          {regions.map((reg) => (
+            <option key={reg} value={reg}>
+              {reg}
+            </option>
+          ))}
+        </select>
+
+        <select
+          value={filter}
+          onChange={(e) => {
+            setFilter(e.target.value);
+            setCurrentPage(1);
+          }}
+          className="p-3 bg-gray-800 text-white rounded-lg"
+        >
+          {filters.map((flt) => (
+            <option key={flt} value={flt}>
+              {flt}
+            </option>
+          ))}
+        </select>
+      </div>
+
+      <section className="mb-12">
+        <h2 className="text-2xl text-white mb-4">Quick Insights</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="p-6 bg-gradient-to-b from-blue-500 to-blue-700 rounded-3xl shadow-lg text-center text-white">
+            <h3 className="text-lg font-bold">Top Genre</h3>
+            <p className="text-3xl font-extrabold mt-2">Technology</p>
+          </div>
+          <div className="p-6 bg-gradient-to-b from-green-500 to-green-700 rounded-3xl shadow-lg text-center text-white">
+            <h3 className="text-lg font-bold">Fastest Growing Podcast</h3>
+            <p className="text-3xl font-extrabold mt-2">The AI Hour</p>
+          </div>
+          <div className="p-6 bg-gradient-to-b from-purple-500 to-purple-700 rounded-3xl shadow-lg text-center text-white">
+            <h3 className="text-lg font-bold">Total Podcasts Tracked</h3>
+            <p className="text-3xl font-extrabold mt-2">250K+</p>
+          </div>
+        </div>
+      </section>
+
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {currentData.map((podcast, index) => (
           <div
             key={podcast.id}
             className="p-6 rounded-3xl shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
             style={{
-              backgroundColor: "rgba(255, 255, 255, 0.2)", // Semi-transparent
+              backgroundColor: "rgba(255, 255, 255, 0.2)",
             }}
           >
             <div className="flex justify-between items-center">
@@ -147,6 +224,7 @@ const Charts = () => {
         ))}
       </div>
 
+      {/* Pagination */}
       <div className="flex justify-center items-center gap-4 mt-8">
         <button
           onClick={handlePrevPage}

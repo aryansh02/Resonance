@@ -7,6 +7,9 @@ import {
   AiOutlineArrowRight,
   AiOutlineSearch,
 } from "react-icons/ai";
+import { db } from "../lib/firebase";
+import { doc, setDoc, getDoc } from "firebase/firestore";
+import { useAuth } from "../context/AuthContext";
 
 export default function PodcastListing() {
   const [podcasts, setPodcasts] = useState([]);
@@ -16,6 +19,8 @@ export default function PodcastListing() {
   const [category, setCategory] = useState("All");
   const [filter, setFilter] = useState("Most Popular");
   const [searchQuery, setSearchQuery] = useState("");
+  const { user } = useAuth(); // Get user from AuthContext
+  const [bookmarkedPodcasts, setBookmarkedPodcasts] = useState(new Set()); // Set to store bookmarked podcast IDs
 
   const podcastsPerPage = 20;
 
@@ -36,6 +41,19 @@ export default function PodcastListing() {
       }
       const data = await response.json();
       setPodcasts(data);
+
+      // Fetch bookmark status for all podcasts
+      if (user) {
+        const bookmarkedSet = new Set();
+        for (const podcast of data) {
+          const bookmarkDoc = doc(db, "bookmarks", `${user.uid}_${podcast.id}`);
+          const docSnap = await getDoc(bookmarkDoc);
+          if (docSnap.exists()) {
+            bookmarkedSet.add(podcast.id);
+          }
+        }
+        setBookmarkedPodcasts(bookmarkedSet);
+      }
     } catch (err) {
       setError(err.message);
     } finally {
@@ -51,6 +69,29 @@ export default function PodcastListing() {
     e.preventDefault();
     setCurrentPage(1);
     setSearchQuery(e.target.search.value.trim());
+  };
+
+  const handleBookmark = async (podcast) => {
+    if (!user) {
+      alert("You need to be logged in to bookmark podcasts.");
+      return;
+    }
+    try {
+      const bookmarkDoc = doc(db, "bookmarks", `${user.uid}_${podcast.id}`); // Unique document for each user and podcast
+      await setDoc(bookmarkDoc, {
+        userId: user.uid,
+        podcastId: podcast.id,
+        podcastTitle: podcast.title,
+        podcastImage: podcast.image,
+        podcastDescription: podcast.description,
+        createdAt: new Date(),
+      });
+      setBookmarkedPodcasts((prev) => new Set(prev).add(podcast.id)); // Update bookmarked set
+      alert(`${podcast.title} has been bookmarked!`);
+    } catch (err) {
+      console.error("Error bookmarking podcast:", err);
+      alert("Failed to bookmark podcast. Please try again.");
+    }
   };
 
   const categories = [
@@ -140,7 +181,6 @@ export default function PodcastListing() {
         </div>
       </div>
 
-      {/* Podcast Cards */}
       {loading ? (
         <div className="flex justify-center items-center min-h-[50vh]">
           <TailSpin
@@ -167,7 +207,7 @@ export default function PodcastListing() {
               key={podcast.id}
               className="p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:border-purple-500 border border-transparent transition-transform transform hover:scale-105"
               style={{
-                backgroundColor: "rgba(0, 0, 0, 0.6)", // Semi-transparent
+                backgroundColor: "rgba(0, 0, 0, 0.6)",
               }}
             >
               <Link href={`/podcast/${podcast.id}`}>
@@ -187,19 +227,31 @@ export default function PodcastListing() {
               <p className="text-gray-400 text-sm mb-4 text-center">
                 {podcast.description.substring(0, 100)}...
               </p>
-              <div className="flex justify-center">
+              <div className="flex justify-center gap-4">
                 <Link href={`/podcast/${podcast.id}`}>
                   <button className="px-4 py-2 bg-purple-600 rounded-2xl text-white hover:bg-purple-800">
                     Play Now
                   </button>
                 </Link>
+                <button
+                  onClick={() => handleBookmark(podcast)}
+                  className={`px-4 py-2 rounded-2xl text-white ${
+                    bookmarkedPodcasts.has(podcast.id)
+                      ? "bg-green-600 cursor-not-allowed"
+                      : "bg-blue-600 hover:bg-blue-800"
+                  }`}
+                  disabled={bookmarkedPodcasts.has(podcast.id)}
+                >
+                  {bookmarkedPodcasts.has(podcast.id)
+                    ? "Bookmarked"
+                    : "Bookmark"}
+                </button>
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* Pagination */}
       <div className="flex justify-between items-center mt-8">
         <button
           onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}

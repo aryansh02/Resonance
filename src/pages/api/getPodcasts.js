@@ -13,7 +13,7 @@ export default async function handler(req, res) {
       offset = 0,
     } = req.query;
 
-    // Fetch details for a single podcast by ID
+    // Fetch details of a specific podcast by ID
     if (id) {
       const response = await fetch(`https://api.spotify.com/v1/shows/${id}`, {
         headers: {
@@ -29,10 +29,11 @@ export default async function handler(req, res) {
 
       const podcast = await response.json();
 
-      // Mock extended details (replace with actual data if available)
-      const mockEpisodes = podcast.episodes?.total || 50; // Total episodes
-      const mockReleaseFrequency = "Weekly"; // Example release frequency
-      const mockAverageDuration = "30 min"; // Example duration
+      // Fetch number of episodes if available
+      const episodesTotal = podcast.episodes?.total || "N/A";
+
+      // Mock data for region since Spotify doesn't provide it
+      const mockRegion = "Global"; // Replace with inferred data if possible
 
       return res.status(200).json({
         id: podcast.id,
@@ -40,13 +41,16 @@ export default async function handler(req, res) {
         description: podcast.description,
         image: podcast.images[0]?.url || "",
         publisher: podcast.publisher || "Unknown Publisher",
-        episodes: mockEpisodes,
-        releaseFrequency: mockReleaseFrequency,
-        averageDuration: mockAverageDuration,
+        episodes: episodesTotal,
+        releaseFrequency: "Weekly", // Adjust if real data is available
+        averageDuration: "30 min", // Adjust if real data is available
+        region: mockRegion,
+        category: podcast.media_type || "Podcast",
+        language: podcast.languages ? podcast.languages.join(", ") : "N/A",
       });
     }
 
-    // Default search query
+    // Handle search or category-based query
     const searchQuery = q.trim()
       ? q.trim()
       : category !== "All"
@@ -55,7 +59,6 @@ export default async function handler(req, res) {
 
     console.log("Search Query Sent to Spotify:", searchQuery);
 
-    // Fetch podcasts based on search query
     const response = await fetch(
       `https://api.spotify.com/v1/search?q=${encodeURIComponent(
         searchQuery
@@ -84,14 +87,14 @@ export default async function handler(req, res) {
       title: show.name,
       description: show.description,
       image: show.images[0]?.url || "/placeholder.png",
-      publisher: show.publisher,
+      publisher: show.publisher || "Unknown Publisher",
     }));
 
     // Apply sorting based on the filter
     if (filter === "Most Popular") {
-      podcasts = podcasts.sort((a, b) => b.title.localeCompare(a.title));
+      podcasts = podcasts.sort((a, b) => b.title.localeCompare(a.title)); // Replace with actual popularity sorting logic if available
     } else if (filter === "Most Recent") {
-      podcasts = podcasts.sort((a, b) => a.id.localeCompare(b.id));
+      podcasts = podcasts.sort((a, b) => a.id.localeCompare(b.id)); // Adjust sorting criteria based on your needs
     }
 
     return res.status(200).json(podcasts);
