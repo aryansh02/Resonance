@@ -15,7 +15,7 @@ const LandingPage = () => {
 
   return (
     <div className="text-white min-h-screen">
-      {/* Header */}
+      
       <header className="fixed top-0 w-full bg-black z-50 p-4 shadow-md">
         <nav className="flex items-center justify-between px-8">
           <div
