@@ -26,4 +26,4 @@ async function getSpotifyToken() {
   return data.access_token;
 }
 
-module.exports = { getSpotifyToken }; // Ensure consistency in import/export
+module.exports = { getSpotifyToken };

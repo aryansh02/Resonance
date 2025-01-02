@@ -47,12 +47,6 @@ export default async function handler(req, res) {
   try {
     const podcastDetails = await fetchPodcastDetails(id);
 
-    const inputText = `
-      Podcast Title: ${podcastDetails.title}.
-      Description: ${podcastDetails.description || "No description provided"}.
-      Category: ${podcastDetails.category}.
-    `;
-
     const insightsText = await generateSummary(
       podcastDetails.description,
       podcastDetails.title,

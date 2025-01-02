@@ -12,7 +12,7 @@ export async function generateSummary(inputText, title = "", category = "") {
       3. Useful for the target audience.
     `;
 
-    console.log("Prompt sent to OpenAI:", prompt); // Debugging
+    console.log("Prompt sent to OpenAI:", prompt);
 
     const response = await fetch("https://api.openai.com/v1/chat/completions", {
       method: "POST",
@@ -27,7 +27,7 @@ export async function generateSummary(inputText, title = "", category = "") {
           { role: "user", content: prompt.trim() },
         ],
         max_tokens: 300,
-        temperature: 0.5, // Consistency in responses
+        temperature: 0.5,
       }),
     });
 
@@ -42,7 +42,7 @@ export async function generateSummary(inputText, title = "", category = "") {
 
     if (!rawText || rawText.length === 0) {
       console.warn("No valid AI-generated response, falling back.");
-      return null; // Allow fallback logic
+      return null;
     }
 
     const insights = rawText

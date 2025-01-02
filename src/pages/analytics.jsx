@@ -140,13 +140,12 @@ const Analytics = () => {
         }
       `}</style>
 
-      {/* Header */}
+      
       <header className="text-center mb-16 mt-16">
         <h1 className="text-4xl font-semi-bold">Analytics</h1>
-       
       </header>
 
-      {/* Summary Section */}
+      
       <section className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="p-6 bg-gray-800 bg-opacity-70 rounded-xl shadow-md hover:shadow-lg transition">
           <h2 className="text-xl font-bold mb-2">Total Listeners</h2>
@@ -162,7 +161,7 @@ const Analytics = () => {
         </div>
       </section>
 
-      {/* Charts Section */}
+      
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div className="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-md hover:shadow-lg transition">
           <h3 className="text-lg font-bold mb-4">Monthly Listener Growth</h3>
@@ -180,7 +179,7 @@ const Analytics = () => {
         </div>
       </section>
 
-      {/* Footer */}
+      
       <footer className="mt-12 text-center text-gray-200">
         <p>&copy; 2024 Resonance. All Rights Reserved.</p>
       </footer>

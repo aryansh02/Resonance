@@ -62,7 +62,7 @@ export default function PodcastListing() {
 
   useEffect(() => {
     fetchPodcasts();
-  }, [currentPage, category, filter, searchQuery]);
+  }, [fetchPodcasts, currentPage, category, filter, searchQuery]);
 
   const handleSearchSubmit = (e) => {
     e.preventDefault();

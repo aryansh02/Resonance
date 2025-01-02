@@ -12,7 +12,6 @@ export default function SmartLinkRedirect() {
 
     async function fetchSmartLink() {
       try {
-        // Reference the smartLink document
         const docRef = doc(db, "smartLinks", id);
         const docSnap = await getDoc(docRef);
 
@@ -25,12 +24,10 @@ export default function SmartLinkRedirect() {
             return;
           }
 
-          // Log click analytics
-          const referrer = document.referrer || "Direct"; // Referrer info
-          const userAgent = navigator.userAgent; // Browser and device info
-          const trackingParams = router.query; // Query parameters in URL
+          const referrer = document.referrer || "Direct";
+          const userAgent = navigator.userAgent;
+          const trackingParams = router.query;
 
-          // Update the Firestore document with tracking data
           await updateDoc(docRef, {
             clicks: arrayUnion({
               timestamp: new Date().toISOString(),
@@ -40,7 +37,6 @@ export default function SmartLinkRedirect() {
             }),
           });
 
-          // Redirect to the appropriate URL
           window.location.href = redirectUrl;
         } else {
           alert("SmartLink not found!");
@@ -52,7 +48,7 @@ export default function SmartLinkRedirect() {
     }
 
     fetchSmartLink();
-  }, [id]);
+  }, [id, router.query]);
 
   return <div>Redirecting...</div>;
 }

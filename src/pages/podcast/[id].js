@@ -27,7 +27,7 @@ export default function PodcastDetails() {
   const [reviews, setReviews] = useState([]);
   const [newReview, setNewReview] = useState("");
   const [rating, setRating] = useState(0);
-  const [isBookmarked, setIsBookmarked] = useState(false); // Track bookmark status
+  const [isBookmarked, setIsBookmarked] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -109,10 +109,10 @@ export default function PodcastDetails() {
         podcastImage: podcast.image,
         createdAt: new Date(),
       });
-      setIsBookmarked(true); // Update the bookmark status
+      setIsBookmarked(true);
       alert(`Podcast "${podcast.title}" has been bookmarked!`);
-    } catch (err) {
-      alert("Failed to bookmark the podcast. Please try again.");
+    } catch {
+      setError("Failed to bookmark the podcast. Please try again.");
     }
   };
 
@@ -137,8 +137,8 @@ export default function PodcastDetails() {
       setRating(0);
       const updatedReviews = [...reviews, { reviewText: newReview, rating }];
       setReviews(updatedReviews);
-    } catch (err) {
-      alert("Failed to add review. Please try again.");
+    } catch {
+      setError("Failed to add review. Please try again.");
     }
   };
 
@@ -164,9 +164,8 @@ export default function PodcastDetails() {
       await navigator.clipboard.writeText(smartLinkUrl);
 
       alert("SmartLink created successfully and copied to your clipboard!");
-    } catch (err) {
-      console.error("Error creating SmartLink:", err);
-      alert("Failed to create SmartLink. Please try again.");
+    } catch {
+      setError("Failed to create SmartLink. Please try again.");
     }
   };
 

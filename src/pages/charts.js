@@ -44,7 +44,7 @@ const Charts = () => {
 
   useEffect(() => {
     fetchCharts();
-  }, [currentPage, category, region, filter]);
+  }, [fetchCharts, currentPage, category, region, filter]);
 
   const totalPages = Math.ceil(charts.length / itemsPerPage);
   const currentData = charts.slice(
@@ -120,7 +120,6 @@ const Charts = () => {
         Top Podcasts on Spotify
       </h1>
 
-      {/* Filter Options */}
       <div className="flex justify-between items-center mb-8">
         <select
           value={category}
@@ -224,7 +223,6 @@ const Charts = () => {
         ))}
       </div>
 
-      {/* Pagination */}
       <div className="flex justify-center items-center gap-4 mt-8">
         <button
           onClick={handlePrevPage}
