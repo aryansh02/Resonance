@@ -44,7 +44,7 @@ const Charts = () => {
 
   useEffect(() => {
     fetchCharts();
-  }, [fetchCharts, currentPage, category, region, filter]);
+  }, [currentPage, category, region, filter]);
 
   const totalPages = Math.ceil(charts.length / itemsPerPage);
   const currentData = charts.slice(
