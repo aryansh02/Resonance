@@ -100,4 +100,4 @@ export const logoutUser = async () => {
   }
 };
 
-export { auth, googleProvider, db };
+export { app, auth, googleProvider, db };

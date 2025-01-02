@@ -160,7 +160,10 @@ export default function PodcastDetails() {
         createdAt: new Date(),
       });
 
-      const smartLinkUrl = `${window.location.origin}/smartlink/${smartLinkDocId}`;
+      const smartLinkUrl =
+        typeof window !== "undefined"
+          ? `${window.location.origin}/smartlink/${smartLinkDocId}`
+          : "";
       await navigator.clipboard.writeText(smartLinkUrl);
 
       alert("SmartLink created successfully and copied to your clipboard!");
@@ -169,16 +172,19 @@ export default function PodcastDetails() {
     }
   };
 
-  const shareLinks = [
-    {
-      name: "Twitter",
-      url: `https://twitter.com/intent/tweet?url=${window.location.href}&text=Check out this podcast: ${podcast?.title}`,
-    },
-    {
-      name: "LinkedIn",
-      url: `https://www.linkedin.com/sharing/share-offsite/?url=${window.location.href}`,
-    },
-  ];
+  const shareLinks =
+    typeof window !== "undefined"
+      ? [
+          {
+            name: "Twitter",
+            url: `https://twitter.com/intent/tweet?url=${window.location.href}&text=Check out this podcast: ${podcast?.title}`,
+          },
+          {
+            name: "LinkedIn",
+            url: `https://www.linkedin.com/sharing/share-offsite/?url=${window.location.href}`,
+          },
+        ]
+      : [];
 
   if (loading) {
     return (
