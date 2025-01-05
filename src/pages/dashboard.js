@@ -12,6 +12,10 @@ const Dashboard = () => {
     }
   }, [user, router]);
 
+  const openBookmarks = () => {
+    router.push("/bookmarks"); // Redirect to the Bookmarks page
+  };
+
   return user ? (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white p-8">
       <header className="flex justify-between items-center mb-8">
@@ -73,12 +77,15 @@ const Dashboard = () => {
         </div>
         <div className="p-6 bg-black rounded-xl shadow-md hover:shadow-lg transition h-56 flex flex-col justify-between">
           <div>
-            <h3 className="text-lg font-semibold">Your Playlist</h3>
+            <h3 className="text-lg font-semibold">Bookmarks</h3>
             <p className="text-gray-400 mt-2">
               View and manage your saved content.
             </p>
           </div>
-          <button className="mt-4 px-4 py-2 bg-indigo-600 rounded-3xl hover:bg-indigo-700">
+          <button
+            onClick={openBookmarks}
+            className="mt-4 px-4 py-2 bg-indigo-600 rounded-3xl hover:bg-indigo-700"
+          >
             Open
           </button>
         </div>

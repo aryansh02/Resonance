@@ -1,4 +1,5 @@
-import React from "react";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -26,6 +27,25 @@ ChartJS.register(
 );
 
 const Analytics = () => {
+  const router = useRouter();
+  const { id } = router.query;
+  const [validAccess, setValidAccess] = useState(false);
+
+  useEffect(() => {
+    if (!id) {
+      // Redirect to the access form if no smartLinkId
+      router.push("/analyticsAccess");
+    } else {
+      // Simulate validation for now
+      setValidAccess(true);
+    }
+  }, [id, router]);
+
+  if (!validAccess) {
+    return null; // Prevent rendering until access is verified
+  }
+
+  // Existing data and options
   const barData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
@@ -140,12 +160,10 @@ const Analytics = () => {
         }
       `}</style>
 
-      
       <header className="text-center mb-16 mt-16">
         <h1 className="text-4xl font-semi-bold">Analytics</h1>
       </header>
 
-      
       <section className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="p-6 bg-gray-800 bg-opacity-70 rounded-xl shadow-md hover:shadow-lg transition">
           <h2 className="text-xl font-bold mb-2">Total Listeners</h2>
@@ -161,7 +179,6 @@ const Analytics = () => {
         </div>
       </section>
 
-      
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         <div className="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-md hover:shadow-lg transition">
           <h3 className="text-lg font-bold mb-4">Monthly Listener Growth</h3>
@@ -179,7 +196,6 @@ const Analytics = () => {
         </div>
       </section>
 
-      
       <footer className="mt-12 text-center text-gray-200">
         <p>&copy; 2024 Resonance. All Rights Reserved.</p>
       </footer>
