@@ -30,12 +30,12 @@ ChartJS.register(
 const Analytics = () => {
   const router = useRouter();
   const { id } = router.query;
-  const { user, roles } = useAuth(); // Access user and roles from AuthContext
+  const { user, roles } = useAuth(); 
   const [validAccess, setValidAccess] = useState(false);
-  const [sentimentResults, setSentimentResults] = useState([]); // Sentiment data
+  const [sentimentResults, setSentimentResults] = useState([]); 
   const [loadingSentiment, setLoadingSentiment] = useState(false);
 
-  // Fetch Sentiment Analysis for users
+  
   const fetchSentimentAnalysis = async () => {
     setLoadingSentiment(true);
     try {
@@ -49,7 +49,7 @@ const Analytics = () => {
     }
   };
 
-  // Load static data for admins/developers
+  
   const loadStaticSentimentData = () => {
     setSentimentResults([
       {
@@ -70,19 +70,19 @@ const Analytics = () => {
   useEffect(() => {
     const checkAccess = () => {
       if (roles.includes("admin") || roles.includes("developer")) {
-        // Admin or Developer can bypass the form
+        
         setValidAccess(true);
-        loadStaticSentimentData(); // Load static data for testing
+        loadStaticSentimentData(); 
         return;
       }
 
       if (!id) {
-        // Redirect to form if no SmartLink ID is provided
+        
         router.push("/analyticsAccess");
       } else {
-        // Allow valid users with an ID to access the page
+        
         setValidAccess(true);
-        fetchSentimentAnalysis(); // Load sentiment analysis for valid users
+        fetchSentimentAnalysis(); 
       }
     };
 
@@ -92,10 +92,10 @@ const Analytics = () => {
   }, [id, router, user, roles]);
 
   if (!validAccess) {
-    return null; // Prevent UI rendering until access is verified
+    return null; 
   }
 
-  // Prepare sentiment data for the chart
+ 
   const aggregateSentiment = (data) => {
     let positive = 0,
       neutral = 0,
@@ -114,9 +114,9 @@ const Analytics = () => {
           label: "Sentiment Distribution",
           data: [positive, neutral, negative],
           backgroundColor: [
-            "rgba(75, 192, 192, 0.6)", // Positive
-            "rgba(153, 102, 255, 0.6)", // Neutral
-            "rgba(255, 99, 132, 0.6)", // Negative
+            "rgba(75, 192, 192, 0.6)",
+            "rgba(153, 102, 255, 0.6)", 
+            "rgba(255, 99, 132, 0.6)", 
           ],
           borderColor: [
             "rgba(75, 192, 192, 1)",
@@ -131,7 +131,7 @@ const Analytics = () => {
 
   const sentimentChartData = aggregateSentiment(sentimentResults);
 
-  // Original analytics charts
+  
   const barData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
@@ -262,7 +262,7 @@ const Analytics = () => {
         </div>
         <div className="p-6 bg-gray-800 bg-opacity-70 rounded-xl shadow-md hover:shadow-lg transition">
           <h2 className="text-xl font-bold mb-2">Top Category</h2>
-          <p className="text-3xl font-extrabold text-yellow-400">Education</p>
+          <p className="text-3xl font-extrabold text-yellow-400">Technology</p>
         </div>
       </section>
 
@@ -283,7 +283,7 @@ const Analytics = () => {
         </div>
       </section>
 
-      <section className="mb-12">
+      <section className="mb-12 mt-16">
         <h2 className="text-2xl font-bold mb-4">Sentiment Analysis</h2>
         {loadingSentiment && <p>Loading sentiment analysis...</p>}
         <div className="bg-gray-800 p-6 rounded-xl shadow-md">
