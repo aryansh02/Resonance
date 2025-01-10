@@ -8,16 +8,34 @@ import {
   sendSignInLinkToEmail,
   signInWithPopup,
 } from "firebase/auth";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../lib/firebase";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+  const [roles, setRoles] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        setUser(currentUser);
+
+        const docRef = doc(db, "roles", currentUser.uid);
+        const docSnap = await getDoc(docRef);
+
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setRoles(data.roles || []);
+        } else {
+          setRoles([]);
+        }
+      } else {
+        setUser(null);
+        setRoles([]);
+      }
       setLoading(false);
     });
 
@@ -46,6 +64,7 @@ export const AuthProvider = ({ children }) => {
     <AuthContext.Provider
       value={{
         user,
+        roles,
         loading,
         login,
         signup,

@@ -13,6 +13,7 @@ import {
   LineElement,
 } from "chart.js";
 import { Bar, Pie, Line } from "react-chartjs-2";
+import { useAuth } from "../context/AuthContext";
 
 ChartJS.register(
   CategoryScale,
@@ -29,23 +30,108 @@ ChartJS.register(
 const Analytics = () => {
   const router = useRouter();
   const { id } = router.query;
+  const { user, roles } = useAuth(); // Access user and roles from AuthContext
   const [validAccess, setValidAccess] = useState(false);
+  const [sentimentResults, setSentimentResults] = useState([]); // Sentiment data
+  const [loadingSentiment, setLoadingSentiment] = useState(false);
+
+  // Fetch Sentiment Analysis for users
+  const fetchSentimentAnalysis = async () => {
+    setLoadingSentiment(true);
+    try {
+      const response = await fetch(`/api/twitterSentiment?query=example-podcast`);
+      const data = await response.json();
+      setSentimentResults(data);
+    } catch (error) {
+      console.error("Error fetching sentiment analysis:", error);
+    } finally {
+      setLoadingSentiment(false);
+    }
+  };
+
+  // Load static data for admins/developers
+  const loadStaticSentimentData = () => {
+    setSentimentResults([
+      {
+        text: "Loved the episode on productivity!",
+        sentiment: { pos: 0.9, neu: 0.1, neg: 0.0 },
+      },
+      {
+        text: "The sound quality needs improvement.",
+        sentiment: { pos: 0.1, neu: 0.6, neg: 0.3 },
+      },
+      {
+        text: "Great guest selection and topics!",
+        sentiment: { pos: 0.8, neu: 0.2, neg: 0.0 },
+      },
+    ]);
+  };
 
   useEffect(() => {
-    if (!id) {
-      // Redirect to the access form if no smartLinkId
-      router.push("/analyticsAccess");
-    } else {
-      // Simulate validation for now
-      setValidAccess(true);
+    const checkAccess = () => {
+      if (roles.includes("admin") || roles.includes("developer")) {
+        // Admin or Developer can bypass the form
+        setValidAccess(true);
+        loadStaticSentimentData(); // Load static data for testing
+        return;
+      }
+
+      if (!id) {
+        // Redirect to form if no SmartLink ID is provided
+        router.push("/analyticsAccess");
+      } else {
+        // Allow valid users with an ID to access the page
+        setValidAccess(true);
+        fetchSentimentAnalysis(); // Load sentiment analysis for valid users
+      }
+    };
+
+    if (user) {
+      checkAccess();
     }
-  }, [id, router]);
+  }, [id, router, user, roles]);
 
   if (!validAccess) {
-    return null; // Prevent rendering until access is verified
+    return null; // Prevent UI rendering until access is verified
   }
 
-  // Existing data and options
+  // Prepare sentiment data for the chart
+  const aggregateSentiment = (data) => {
+    let positive = 0,
+      neutral = 0,
+      negative = 0;
+
+    data.forEach((item) => {
+      positive += item.sentiment.pos;
+      neutral += item.sentiment.neu;
+      negative += item.sentiment.neg;
+    });
+
+    return {
+      labels: ["Positive", "Neutral", "Negative"],
+      datasets: [
+        {
+          label: "Sentiment Distribution",
+          data: [positive, neutral, negative],
+          backgroundColor: [
+            "rgba(75, 192, 192, 0.6)", // Positive
+            "rgba(153, 102, 255, 0.6)", // Neutral
+            "rgba(255, 99, 132, 0.6)", // Negative
+          ],
+          borderColor: [
+            "rgba(75, 192, 192, 1)",
+            "rgba(153, 102, 255, 1)",
+            "rgba(255, 99, 132, 1)",
+          ],
+          borderWidth: 1,
+        },
+      ],
+    };
+  };
+
+  const sentimentChartData = aggregateSentiment(sentimentResults);
+
+  // Original analytics charts
   const barData = {
     labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
     datasets: [
@@ -141,7 +227,8 @@ const Analytics = () => {
     <div
       className="p-8 min-h-screen text-white"
       style={{
-        background: "linear-gradient(90deg, #03071E, #370617, #6A040F, #9D0208, #D00000, #DC2F02, #E85D04, #F48C06, #FAA307, #FFBA08)",
+        background:
+          "linear-gradient(90deg, #03071E, #370617, #6A040F, #9D0208, #D00000, #DC2F02, #E85D04, #F48C06, #FAA307, #FFBA08)",
         backgroundSize: "300% 300%",
         animation: "gradientAnimation 12s ease infinite",
       }}
@@ -193,6 +280,14 @@ const Analytics = () => {
         <div className="bg-gray-800 bg-opacity-70 p-6 rounded-xl shadow-md hover:shadow-lg transition">
           <h3 className="text-lg font-bold mb-4">Weekly Engagement Trend</h3>
           <Line data={lineData} options={lineOptions} />
+        </div>
+      </section>
+
+      <section className="mb-12">
+        <h2 className="text-2xl font-bold mb-4">Sentiment Analysis</h2>
+        {loadingSentiment && <p>Loading sentiment analysis...</p>}
+        <div className="bg-gray-800 p-6 rounded-xl shadow-md">
+          <Bar data={sentimentChartData} options={{ responsive: true, plugins: { legend: { position: "top" }, title: { display: true, text: "Sentiment Analysis" } } }} />
         </div>
       </section>
 
