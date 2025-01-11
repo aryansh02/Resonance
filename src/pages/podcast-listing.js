@@ -8,7 +8,7 @@ import {
   AiOutlineSearch,
 } from "react-icons/ai";
 import { db } from "../lib/firebase";
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, deleteDoc } from "firebase/firestore";
 import { useAuth } from "../context/AuthContext";
 
 export default function PodcastListing() {
@@ -90,6 +90,26 @@ export default function PodcastListing() {
     } catch (err) {
       console.error("Error bookmarking podcast:", err);
       alert("Failed to bookmark podcast. Please try again.");
+    }
+  };
+
+  const handleRemoveBookmark = async (podcast) => {
+    if (!user) {
+      alert("You need to be logged in to remove bookmarks.");
+      return;
+    }
+    try {
+      const bookmarkDoc = doc(db, "bookmarks", `${user.uid}_${podcast.id}`);
+      await deleteDoc(bookmarkDoc);
+      setBookmarkedPodcasts((prev) => {
+        const updatedSet = new Set(prev);
+        updatedSet.delete(podcast.id);
+        return updatedSet;
+      });
+      alert(`${podcast.title} has been removed from bookmarks.`);
+    } catch (err) {
+      console.error("Error removing bookmark:", err);
+      alert("Failed to remove bookmark. Please try again.");
     }
   };
 
@@ -204,7 +224,7 @@ export default function PodcastListing() {
           {podcasts.map((podcast) => (
             <div
               key={podcast.id}
-              className="p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:border-purple-500 border border-transparent transition-transform transform hover:scale-105"
+              className="p-6 rounded-2xl shadow-lg hover:shadow-2xl hover:border-purple-500 border border-transparent transition-transform transform hover:scale-105 flex flex-col justify-between"
               style={{
                 backgroundColor: "rgba(0, 0, 0, 0.6)",
               }}
@@ -220,12 +240,14 @@ export default function PodcastListing() {
                   />
                 </div>
               </Link>
-              <h2 className="text-xl font-bold text-white mb-2 text-center">
-                {podcast.title}
-              </h2>
-              <p className="text-gray-400 text-sm mb-4 text-center">
-                {podcast.description.substring(0, 100)}...
-              </p>
+              <div className="flex-grow">
+                <h2 className="text-xl font-bold text-white mb-2 text-center">
+                  {podcast.title}
+                </h2>
+                <p className="text-gray-400 text-sm mb-4 text-center">
+                  {podcast.description.substring(0, 100)}...
+                </p>
+              </div>
               <div className="flex justify-center gap-4">
                 <Link href={`/podcast/${podcast.id}`}>
                   <button className="px-4 py-2 bg-purple-600 rounded-2xl text-white hover:bg-purple-800">
@@ -233,17 +255,18 @@ export default function PodcastListing() {
                   </button>
                 </Link>
                 <button
-                  onClick={() => handleBookmark(podcast)}
+                  onClick={() =>
+                    bookmarkedPodcasts.has(podcast.id)
+                      ? handleRemoveBookmark(podcast)
+                      : handleBookmark(podcast)
+                  }
                   className={`px-4 py-2 rounded-2xl text-white ${
                     bookmarkedPodcasts.has(podcast.id)
-                      ? "bg-green-600 cursor-not-allowed"
+                      ? "bg-red-600 hover:bg-red-800"
                       : "bg-blue-600 hover:bg-blue-800"
                   }`}
-                  disabled={bookmarkedPodcasts.has(podcast.id)}
                 >
-                  {bookmarkedPodcasts.has(podcast.id)
-                    ? "Bookmarked"
-                    : "Bookmark"}
+                  {bookmarkedPodcasts.has(podcast.id) ? "Remove" : "Bookmark"}
                 </button>
               </div>
             </div>

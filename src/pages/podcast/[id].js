@@ -2,6 +2,10 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { TailSpin } from "react-loader-spinner";
 import Image from "next/image";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faBookmark as solidBookmark } from "@fortawesome/free-solid-svg-icons";
+import { faBookmark as regularBookmark } from "@fortawesome/free-regular-svg-icons";
+import { faShareAlt } from "@fortawesome/free-solid-svg-icons";
 import { db } from "../../lib/firebase";
 import {
   collection,
@@ -11,6 +15,7 @@ import {
   getDocs,
   query,
   where,
+  deleteDoc,
 } from "firebase/firestore";
 import { useAuth } from "../../context/AuthContext";
 
@@ -28,6 +33,7 @@ export default function PodcastDetails() {
   const [newReview, setNewReview] = useState("");
   const [rating, setRating] = useState(0);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [showShareOptions, setShowShareOptions] = useState(false);
 
   useEffect(() => {
     if (!id) return;
@@ -99,20 +105,33 @@ export default function PodcastDetails() {
       alert("You need to be logged in to bookmark this podcast.");
       return;
     }
+
+    console.log("Bookmark button clicked");
     try {
       const bookmarkDoc = doc(db, "bookmarks", `${user.uid}_${podcast.id}`);
-      await setDoc(bookmarkDoc, {
-        userId: user.uid,
-        podcastId: podcast.id,
-        podcastTitle: podcast.title,
-        podcastDescription: podcast.description,
-        podcastImage: podcast.image,
-        createdAt: new Date(),
-      });
-      setIsBookmarked(true);
-      alert(`Podcast "${podcast.title}" has been bookmarked!`);
-    } catch {
-      setError("Failed to bookmark the podcast. Please try again.");
+      const docSnap = await getDoc(bookmarkDoc);
+
+      if (docSnap.exists()) {
+        console.log("Bookmark exists. Deleting...");
+        await deleteDoc(bookmarkDoc);
+        setIsBookmarked(false);
+        alert(`Podcast "${podcast.title}" has been removed from bookmarks.`);
+      } else {
+        console.log("Bookmark does not exist. Adding...");
+        await setDoc(bookmarkDoc, {
+          userId: user.uid,
+          podcastId: podcast.id,
+          podcastTitle: podcast.title,
+          podcastDescription: podcast.description,
+          podcastImage: podcast.image,
+          createdAt: new Date(),
+        });
+        setIsBookmarked(true);
+        alert(`Podcast "${podcast.title}" has been bookmarked!`);
+      }
+    } catch (err) {
+      console.error("Error toggling bookmark:", err);
+      setError("Failed to update bookmark status. Please try again.");
     }
   };
 
@@ -137,38 +156,9 @@ export default function PodcastDetails() {
       setRating(0);
       const updatedReviews = [...reviews, { reviewText: newReview, rating }];
       setReviews(updatedReviews);
-    } catch {
+    } catch (err) {
+      console.error("Error adding review:", err);
       setError("Failed to add review. Please try again.");
-    }
-  };
-
-  const handleCreateSmartLink = async () => {
-    if (!user || !podcast) return;
-    const smartLinkData = {
-      spotifyUrl: podcast.spotifyUrl || "",
-      applePodcastsUrl: podcast.applePodcastsUrl || "",
-      googlePodcastsUrl: podcast.googlePodcastsUrl || "",
-      defaultUrl: podcast.defaultUrl || "",
-    };
-
-    try {
-      const smartLinkDocId = `${user.uid}_${id}`;
-      const smartLinkDoc = doc(db, "smartlinks", smartLinkDocId);
-      await setDoc(smartLinkDoc, {
-        ...smartLinkData,
-        createdBy: user.uid,
-        createdAt: new Date(),
-      });
-
-      const smartLinkUrl =
-        typeof window !== "undefined"
-          ? `${window.location.origin}/smartlink/${smartLinkDocId}`
-          : "";
-      await navigator.clipboard.writeText(smartLinkUrl);
-
-      alert("SmartLink created successfully and copied to your clipboard!");
-    } catch {
-      setError("Failed to create SmartLink. Please try again.");
     }
   };
 
@@ -234,9 +224,45 @@ export default function PodcastDetails() {
         }
       `}</style>
 
-      <h1 className="text-4xl font-extrabold text-center mb-8 mt-16">
-        {podcast.title}
-      </h1>
+      <div className="relative flex items-center mb-8 mt-16 px-8">
+        <h1 className="absolute inset-x-0 text-center text-4xl font-extrabold">
+          {podcast.title}
+        </h1>
+
+        <div className="ml-auto flex items-center gap-4">
+          <button
+            onClick={handleBookmarkPodcast}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-gray-600 text-white cursor-pointer z-10"
+          >
+            <FontAwesomeIcon
+              icon={isBookmarked ? solidBookmark : regularBookmark}
+            />
+          </button>
+          <div className="relative">
+            <button
+              onClick={() => setShowShareOptions((prev) => !prev)}
+              className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-700 hover:bg-gray-600 text-white"
+            >
+              <FontAwesomeIcon icon={faShareAlt} />
+            </button>
+            {showShareOptions && (
+              <div className="absolute right-0 mt-2 w-40 bg-gray-800 text-white rounded-lg shadow-lg">
+                {shareLinks.map((link, index) => (
+                  <a
+                    key={index}
+                    href={link.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block px-4 py-2 hover:bg-gray-700"
+                  >
+                    {link.name}
+                  </a>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
 
       <div className="flex flex-col lg:flex-row lg:items-start gap-10 ml-8 mt-16">
         <div className="flex-shrink-0">
@@ -252,36 +278,6 @@ export default function PodcastDetails() {
           <p className="text-lg leading-7 text-gray-300 mb-6 ml-8">
             {podcast.description}
           </p>
-          <button
-            onClick={handleBookmarkPodcast}
-            className={`mt-4 px-4 py-2 ${
-              isBookmarked ? "bg-green-700" : "bg-green-500"
-            } text-white rounded-lg hover:bg-green-800 ml-8`}
-            disabled={isBookmarked}
-          >
-            {isBookmarked ? "Added" : "Add to Bookmarks"}
-          </button>
-
-          <button
-            onClick={handleCreateSmartLink}
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-800 ml-8"
-          >
-            Create SmartLink
-          </button>
-          <div className="mt-4 ml-8">
-            <span className="text-gray-400 font-bold mr-4">Share:</span>
-            {shareLinks.map((link, index) => (
-              <a
-                key={index}
-                href={link.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block px-3 py-1 bg-gray-700 text-white rounded-md shadow-md hover:bg-gray-600 mr-2"
-              >
-                {link.name}
-              </a>
-            ))}
-          </div>
         </div>
         <div className="lg:flex-shrink-0 lg:w-1/3 ml-8">
           <h3 className="text-xl font-semibold text-sky-400 mb-4">
