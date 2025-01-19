@@ -251,7 +251,7 @@ export default function PodcastListing() {
               <div className="flex justify-center gap-4">
                 <Link href={`/podcast/${podcast.id}`}>
                   <button className="px-4 py-2 bg-purple-600 rounded-2xl text-white hover:bg-purple-800">
-                    Play Now
+                    View
                   </button>
                 </Link>
                 <button

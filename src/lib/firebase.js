@@ -4,6 +4,7 @@ import {
   GoogleAuthProvider,
   signOut,
   onAuthStateChanged,
+  signInWithPopup,
 } from "firebase/auth";
 import {
   getFirestore,
@@ -35,7 +36,9 @@ const db = getFirestore(app);
 
 export const addDocument = async (collectionName, documentId, data) => {
   try {
-    const docRef = doc(db, collectionName, documentId);
+    const docRef = documentId
+      ? doc(db, collectionName, documentId)
+      : doc(collection(db, collectionName));
     await setDoc(docRef, data);
     console.log("Document successfully written!");
   } catch (error) {
@@ -82,13 +85,10 @@ export const queryCollection = async (
 };
 
 export const authStateListener = (callback) => {
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      callback(user);
-    } else {
-      callback(null);
-    }
+  const unsubscribe = onAuthStateChanged(auth, (user) => {
+    callback(user || null);
   });
+  return unsubscribe; // Return unsubscribe function for cleanup
 };
 
 export const logoutUser = async () => {
@@ -97,6 +97,17 @@ export const logoutUser = async () => {
     console.log("User successfully logged out.");
   } catch (error) {
     console.error("Error logging out: ", error);
+  }
+};
+
+export const signInWithGoogle = async () => {
+  try {
+    const result = await signInWithPopup(auth, googleProvider);
+    console.log("User signed in:", result.user);
+    return result.user;
+  } catch (error) {
+    console.error("Error signing in with Google: ", error);
+    throw error;
   }
 };
 

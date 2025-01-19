@@ -89,14 +89,14 @@ export default function AuthPage() {
         <div className="flex gap-4 justify-center mb-6">
           <button
             onClick={handleGoogleSignIn}
-            className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-lg shadow hover:bg-gray-200"
+            className="flex items-center gap-2 px-4 py-2 bg-white text-black rounded-3xl shadow hover:bg-gray-200"
           >
             <Image
               src="/Google.svg"
               alt="Google"
               width={20}
               height={20}
-              className="w-5 h-5"
+              className="w-7 h-7"
             />
             Google
           </button>

@@ -30,10 +30,10 @@ const LandingPage = () => {
                 <Link href="/podcast-listing" className="gradient-underline">
                   Podcasts
                 </Link>
-                <Link href="/charts" className="gradient-underline">
-                  Charts
+                <Link href="/rankings" className="gradient-underline">
+                  Rankings
                 </Link>
-                <Link href="/analytics" className="gradient-underline">
+                <Link href="/analyticsAccess" className="gradient-underline">
                   Analytics
                 </Link>
                 <Link href="/dashboard" className="gradient-underline">

@@ -40,13 +40,13 @@ function Header() {
                 Podcasts
               </Link>
               <Link
-                href="/charts"
+                href="/rankings"
                 className="text-white font-bold text-xl hover:underline"
               >
-                Charts
+                Rankings
               </Link>
               <Link
-                href="/analytics"
+                href="/analyticsAccess"
                 className="text-white font-bold text-xl hover:underline"
               >
                 Analytics

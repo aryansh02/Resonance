@@ -13,7 +13,7 @@ const Dashboard = () => {
   }, [user, router]);
 
   const openBookmarks = () => {
-    router.push("/bookmarks"); // Redirect to the Bookmarks page
+    router.push("/bookmarks");
   };
 
   return user ? (

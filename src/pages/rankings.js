@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { TailSpin } from "react-loader-spinner";
 import Image from "next/image";
+import Link from "next/link";
 
 const placeholderImage = "https://via.placeholder.com/64";
 
@@ -187,39 +188,40 @@ const Charts = () => {
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {currentData.map((podcast, index) => (
-          <div
-            key={podcast.id}
-            className="p-6 rounded-3xl shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl"
-            style={{
-              backgroundColor: "rgba(255, 255, 255, 0.2)",
-            }}
-          >
-            <div className="flex justify-between items-center">
-              <span className="text-2xl font-bold text-white">
-                #{index + 1 + (currentPage - 1) * itemsPerPage}
-              </span>
-              <span className="text-sm bg-white text-black px-2 py-1 rounded-full">
-                {podcast.publisher}
-              </span>
-            </div>
+          <Link key={podcast.id} href={`/podcast/${podcast.id}`}>
+            <div
+              className="p-6 rounded-3xl shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl cursor-pointer"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.2)",
+              }}
+            >
+              <div className="flex justify-between items-center">
+                <span className="text-2xl font-bold text-white">
+                  #{index + 1 + (currentPage - 1) * itemsPerPage}
+                </span>
+                <span className="text-sm bg-white text-black px-2 py-1 rounded-full">
+                  {podcast.publisher}
+                </span>
+              </div>
 
-            <div className="w-24 h-24 relative mx-auto my-4">
-              <Image
-                src={podcast.image || placeholderImage}
-                alt={podcast.title}
-                layout="fill"
-                objectFit="cover"
-                className="rounded-full"
-              />
-            </div>
+              <div className="w-24 h-24 relative mx-auto my-4">
+                <Image
+                  src={podcast.image || placeholderImage}
+                  alt={podcast.title}
+                  layout="fill"
+                  objectFit="cover"
+                  className="rounded-full"
+                />
+              </div>
 
-            <h2 className="text-xl font-semibold text-center text-white">
-              {podcast.title}
-            </h2>
-            <p className="text-gray-300 text-sm mt-6 text-center">
-              {podcast.description.substring(0, 100)}...
-            </p>
-          </div>
+              <h2 className="text-xl font-semibold text-center text-white">
+                {podcast.title}
+              </h2>
+              <p className="text-gray-300 text-sm mt-6 text-center">
+                {podcast.description.substring(0, 100)}...
+              </p>
+            </div>
+          </Link>
         ))}
       </div>
 

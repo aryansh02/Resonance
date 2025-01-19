@@ -1,153 +1,146 @@
-import { useState } from "react";
-import { useAuth } from "../context/AuthContext";
-import { doc, setDoc } from "firebase/firestore";
-import { db } from "../lib/firebase";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 
-const AnalyticsAccess = () => {
-  const { user } = useAuth();
-  const router = useRouter();
+const SpotifyClientId = process.env.NEXT_PUBLIC_SPOTIFY_CLIENT_ID;
+const RedirectUri = process.env.NEXT_PUBLIC_SPOTIFY_REDIRECT_URI;
+const Scope = "user-read-private user-read-email";
 
-  const [formData, setFormData] = useState({
-    podcastName: "",
-    email: "",
-    podcastPlatform: "",
-    platformLink: "",
-  });
-  const [loading, setLoading] = useState(false);
+if (!SpotifyClientId || !RedirectUri) {
+  console.error("Spotify Client ID or Redirect URI is not defined!");
+}
+
+const AnalyticsAccess = () => {
+  const router = useRouter();
+  const [spotifyUser, setSpotifyUser] = useState(null);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
+  useEffect(() => {
+    const code = router.query.code;
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+    console.log("Router Query:", router.query);
 
-    if (!formData.podcastName || !formData.email || !formData.platformLink) {
-      setError("Please fill in all the required fields.");
-      return;
-    }
+    if (code) {
+      const fetchSpotifyUser = async () => {
+        try {
+          console.log("Fetching Spotify user with code:", code);
+          const response = await fetch(`/api/callback?code=${code}`);
+          const data = await response.json();
 
-    setLoading(true);
-    setError(null);
+          if (data.success) {
+            console.log("Spotify user fetched successfully:", data.user);
+            setSpotifyUser(data.user);
 
-    try {
-      const smartLinkId = `${user.uid}_${formData.podcastName.replaceAll(
-        " ",
-        "_"
-      )}`;
-      const smartLinkData = {
-        userId: user.uid,
-        podcastName: formData.podcastName,
-        email: formData.email,
-        podcastPlatform: formData.podcastPlatform,
-        platformLink: formData.platformLink,
-        smartLinkId,
-        createdAt: new Date(),
+            console.log("Redirecting to /analytics...");
+            router.replace("/analytics");
+          } else {
+            console.error("Failed to fetch Spotify user:", data.message);
+            setError(data.message);
+          }
+        } catch (err) {
+          console.error("Error during Spotify fetch:", err);
+          setError("An unexpected error occurred.");
+        } finally {
+          setLoading(false);
+        }
       };
 
-      const docRef = doc(db, "smartLinks", smartLinkId);
-      await setDoc(docRef, smartLinkData);
-
-      router.push(`/analytics/${smartLinkId}`);
-    } catch (err) {
-      console.error("Error saving SmartLink:", err);
-      setError("Failed to generate SmartLink. Please try again.");
-    } finally {
+      fetchSpotifyUser();
+    } else {
+      console.log("No code in query parameters.");
       setLoading(false);
     }
+  }, [router.query.code, router]);
+
+  const handleLoginWithSpotify = () => {
+    const spotifyAuthUrl = `https://accounts.spotify.com/authorize?client_id=${SpotifyClientId}&response_type=code&redirect_uri=${encodeURIComponent(
+      RedirectUri
+    )}&scope=${encodeURIComponent(Scope)}`;
+    console.log("Redirecting to Spotify Auth URL:", spotifyAuthUrl);
+    window.location.href = spotifyAuthUrl;
   };
 
-  return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white flex items-center justify-center p-8">
-      <div className="bg-gray-800 bg-opacity-80 p-6 rounded-xl shadow-lg max-w-md w-full">
-        <h1 className="text-2xl font-bold mb-6 text-center">
-          Unlock Analytics for Your Podcast
-        </h1>
-        <p className="text-center mb-6 text-gray-400">
-          Sign up as a podcast creator and fill in the details below to access
-          detailed analytics and SmartLinks for your podcast.
-        </p>
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {error && <p className="text-red-500 text-sm">{error}</p>}
-          <div>
-            <label htmlFor="podcastName" className="block text-sm font-medium">
-              Podcast Name *
-            </label>
-            <input
-              type="text"
-              id="podcastName"
-              name="podcastName"
-              value={formData.podcastName}
-              onChange={handleChange}
-              className="w-full p-3 rounded bg-gray-700 text-white mt-2"
-              placeholder="Enter the name of your podcast"
-            />
-          </div>
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium">
-              Your Email *
-            </label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              className="w-full p-3 rounded bg-gray-700 text-white mt-2"
-              placeholder="Enter your email"
-            />
-          </div>
-          <div>
-            <label
-              htmlFor="podcastPlatform"
-              className="block text-sm font-medium"
-            >
-              Podcast Platform
-            </label>
-            <select
-              id="podcastPlatform"
-              name="podcastPlatform"
-              value={formData.podcastPlatform}
-              onChange={handleChange}
-              className="w-full p-3 rounded bg-gray-700 text-white mt-2"
-            >
-              <option value="" disabled>
-                Select platform
-              </option>
-              <option value="Spotify">Spotify</option>
-              <option value="Apple Podcasts">Apple Podcasts</option>
-              <option value="Google Podcasts">Google Podcasts</option>
-              <option value="Other">Other</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="platformLink" className="block text-sm font-medium">
-              Platform Link *
-            </label>
-            <input
-              type="url"
-              id="platformLink"
-              name="platformLink"
-              value={formData.platformLink}
-              onChange={handleChange}
-              className="w-full p-3 rounded bg-gray-700 text-white mt-2"
-              placeholder="Enter the podcast link on the platform"
-            />
-          </div>
-          <button
-            type="submit"
-            className={`w-full p-3 rounded-lg ${
-              loading ? "bg-gray-600" : "bg-indigo-600 hover:bg-indigo-700"
-            } text-white font-bold`}
-            disabled={loading}
-          >
-            {loading ? "Generating SmartLink..." : "Submit & Generate"}
-          </button>
-        </form>
+  if (loading) {
+    console.log("Loading state active...");
+    return (
+      <div className="min-h-screen flex items-center justify-center text-white bg-black">
+        <p>Loading...</p>
       </div>
+    );
+  }
+
+  return (
+    <div
+      className="min-h-screen flex flex-col items-center justify-center text-white"
+      style={{
+        background:
+          "linear-gradient(90deg, #1DB954, #191414, #1DB954, #191414)",
+        backgroundSize: "400% 400%",
+        animation: "gradientAnimation 10s ease infinite",
+      }}
+    >
+      <style jsx>{`
+        @keyframes gradientAnimation {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+        .pulse {
+          animation: pulseAnimation 1.5s infinite;
+        }
+        @keyframes pulseAnimation {
+          0% {
+            transform: scale(1);
+            opacity: 1;
+          }
+          50% {
+            transform: scale(1.1);
+            opacity: 0.9;
+          }
+          100% {
+            transform: scale(1);
+            opacity: 1;
+          }
+        }
+      `}</style>
+
+      {error ? (
+        <div className="text-center">
+          <h1 className="text-4xl font-bold mb-8">Error</h1>
+          <p className="text-lg mb-8">{error}</p>
+          <button
+            onClick={handleLoginWithSpotify}
+            className="bg-blue-600 hover:bg-blue-700 text-white py-3 px-6 rounded-full text-lg font-bold shadow-md pulse"
+          >
+            Retry Log In
+          </button>
+        </div>
+      ) : (
+        <div className="text-center">
+          <h1 className="text-5xl font-bold mb-6 tracking-wide animate-bounce">
+            Your Podcast Analytics Hub
+          </h1>
+          <p className="text-lg mb-8 text-gray-200">
+            Discover your podcast’s impact — connect with Spotify.
+          </p>
+          <button
+            onClick={handleLoginWithSpotify}
+            className="bg-green-500 hover:bg-green-600 text-white py-4 px-10 rounded-full text-lg font-bold shadow-lg transition-transform transform hover:scale-105"
+          >
+            Log In
+          </button>
+        </div>
+      )}
+
+      <footer className="absolute bottom-8 text-center text-gray-300">
+        <p>&copy; 2024 Resonance. All Rights Reserved.</p>
+      </footer>
     </div>
   );
 };
