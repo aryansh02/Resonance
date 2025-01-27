@@ -46,7 +46,7 @@ function Header() {
                 Rankings
               </Link>
               <Link
-                href="/analyticsAccess"
+                href="/analytics"
                 className="text-white font-bold text-xl hover:underline"
               >
                 Analytics

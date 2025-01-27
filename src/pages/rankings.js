@@ -1,76 +1,51 @@
 import React, { useState, useEffect } from "react";
 import { TailSpin } from "react-loader-spinner";
-import Image from "next/image";
-import Link from "next/link";
 
 const placeholderImage = "https://via.placeholder.com/64";
 
-const Charts = () => {
-  const [charts, setCharts] = useState([]);
+const Rankings = () => {
+  const [rankings, setRankings] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [category, setCategory] = useState("All");
-  const [region, setRegion] = useState("India");
-  const [filter, setFilter] = useState("Most Popular");
-  const itemsPerPage = 10;
+  const [view, setView] = useState("Card");
 
-  const categories = ["All", "Technology", "Health", "Education", "Business"];
-  const regions = ["India", "US", "UK", "Canada", "Australia"];
-  const filters = ["Most Popular", "Recently Trending"];
-
-  const fetchCharts = async () => {
+  const fetchRankings = async () => {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(
-        `/api/getPodcastCharts?limit=${itemsPerPage}&offset=${
-          (currentPage - 1) * itemsPerPage
-        }&category=${category}&region=${region}&filter=${filter}`
-      );
-      const data = await response.json();
+      const response = await fetch(`/api/getPodcastCharts`);
 
       if (!response.ok) {
-        throw new Error(data.error || "Failed to fetch charts");
+        throw new Error(
+          `Failed to fetch: ${response.status} ${response.statusText}`
+        );
       }
 
-      setCharts(data);
+      const data = await response.json();
+
+      if (!Array.isArray(data)) {
+        throw new Error("Invalid data format received");
+      }
+
+      setRankings(data);
     } catch (err) {
-      setError(err.message);
+      console.error("Error fetching rankings:", err.message);
+      setError(err.message || "Failed to fetch podcast rankings");
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCharts();
-  }, [currentPage, category, region, filter]);
-
-  const totalPages = Math.ceil(charts.length / itemsPerPage);
-  const currentData = charts.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) setCurrentPage(currentPage + 1);
-  };
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) setCurrentPage(currentPage - 1);
-  };
+    fetchRankings();
+  }, []);
 
   if (loading) {
     return (
       <div
         className="min-h-screen flex items-center justify-center text-white"
-        style={{
-          background:
-            "linear-gradient(180deg, #0B132B, #00171F, #003459, #007EA7, #00A8E8)",
-          backgroundSize: "100% 300%",
-          animation: "chartsGradientAnimation 12s linear infinite",
-        }}
+        style={{ backgroundColor: "#1c1c1c" }}
       >
         <TailSpin height="60" width="60" color="#00BFFF" ariaLabel="loading" />
       </div>
@@ -81,179 +56,117 @@ const Charts = () => {
     return (
       <div
         className="min-h-screen flex items-center justify-center text-white"
-        style={{
-          background:
-            "linear-gradient(180deg, #0B132B, #00171F, #003459, #007EA7, #00A8E8)",
-          backgroundSize: "100% 300%",
-          animation: "chartsGradientAnimation 12s linear infinite",
-        }}
+        style={{ backgroundColor: "#1c1c1c" }}
       >
-        <p>Error: {error}</p>
+        <div className="text-center">
+          <p className="text-xl mb-4">Error: {error}</p>
+          <button
+            onClick={fetchRankings}
+            className="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg"
+          >
+            Retry
+          </button>
+        </div>
       </div>
     );
   }
 
   return (
     <div
-      className="min-h-screen p-8 text-black"
-      style={{
-        background:
-          "linear-gradient(180deg, #0B132B, #00171F, #003459, #007EA7, #00A8E8)",
-        backgroundSize: "100% 300%",
-        animation: "chartsGradientAnimation 15s linear infinite",
-      }}
+      className="min-h-screen p-8"
+      style={{ backgroundColor: "#1c1c1c", color: "white" }}
     >
-      <style jsx>{`
-        @keyframes chartsGradientAnimation {
-          0% {
-            background-position: 50% 0%;
-          }
-          50% {
-            background-position: 50% 100%;
-          }
-          100% {
-            background-position: 50% 0%;
-          }
-        }
-      `}</style>
-
-      <h1 className="text-4xl font-semi-bold mb-24 mt-16 text-center text-shadow-lg text-white">
-        Top Podcasts on Spotify
-      </h1>
-
       <div className="flex justify-between items-center mb-8">
-        <select
-          value={category}
-          onChange={(e) => {
-            setCategory(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="p-3 bg-gray-800 text-white rounded-lg"
-        >
-          {categories.map((cat) => (
-            <option key={cat} value={cat}>
-              {cat}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={region}
-          onChange={(e) => {
-            setRegion(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="p-3 bg-gray-800 text-white rounded-lg"
-        >
-          {regions.map((reg) => (
-            <option key={reg} value={reg}>
-              {reg}
-            </option>
-          ))}
-        </select>
-
-        <select
-          value={filter}
-          onChange={(e) => {
-            setFilter(e.target.value);
-            setCurrentPage(1);
-          }}
-          className="p-3 bg-gray-800 text-white rounded-lg"
-        >
-          {filters.map((flt) => (
-            <option key={flt} value={flt}>
-              {flt}
-            </option>
-          ))}
-        </select>
+        <h1 className="text-4xl font-bold ml-4 mt-6 mb-6">Top Shows</h1>
+        <div className="flex items-center space-x-4 mt-6 mb-6">
+          <button
+            onClick={() => setView("Card")}
+            className={`px-4 py-2 rounded-3xl ${
+              view === "Card" ? "bg-blue-600 text-white" : "bg-gray-500"
+            }`}
+          >
+            Default
+          </button>
+          <button
+            onClick={() => setView("Leaderboard")}
+            className={`px-4 py-2 rounded-3xl ${
+              view === "Leaderboard" ? "bg-blue-600 text-white" : "bg-gray-500"
+            }`}
+          >
+            Leaderboard
+          </button>
+        </div>
       </div>
 
-      <section className="mb-12">
-        <h2 className="text-2xl text-white mb-4">Quick Insights</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          <div className="p-6 bg-gradient-to-b from-blue-500 to-blue-700 rounded-3xl shadow-lg text-center text-white">
-            <h3 className="text-lg font-bold">Top Genre</h3>
-            <p className="text-3xl font-extrabold mt-2">Technology</p>
-          </div>
-          <div className="p-6 bg-gradient-to-b from-green-500 to-green-700 rounded-3xl shadow-lg text-center text-white">
-            <h3 className="text-lg font-bold">Fastest Growing Podcast</h3>
-            <p className="text-3xl font-extrabold mt-2">The AI Hour</p>
-          </div>
-          <div className="p-6 bg-gradient-to-b from-purple-500 to-purple-700 rounded-3xl shadow-lg text-center text-white">
-            <h3 className="text-lg font-bold">Total Podcasts Tracked</h3>
-            <p className="text-3xl font-extrabold mt-2">250K+</p>
-          </div>
-        </div>
-      </section>
-
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        {currentData.map((podcast, index) => (
-          <Link key={podcast.id} href={`/podcast/${podcast.id}`}>
+      {view === "Card" ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+          {rankings.map((podcast, index) => (
             <div
-              className="p-6 rounded-3xl shadow-lg transition-transform transform hover:scale-105 hover:shadow-2xl cursor-pointer"
+              key={podcast.id}
+              onClick={() => (window.location.href = `/podcast/${podcast.id}`)}
+              className="p-4 shadow-lg hover:shadow-xl cursor-pointer transition-transform transform hover:scale-105"
               style={{
-                backgroundColor: "rgba(255, 255, 255, 0.2)",
+                backgroundColor: "#1c1c1c",
+                boxShadow: "none",
               }}
             >
-              <div className="flex justify-between items-center">
-                <span className="text-2xl font-bold text-white">
-                  #{index + 1 + (currentPage - 1) * itemsPerPage}
-                </span>
-                <span className="text-sm bg-white text-black px-2 py-1 rounded-full">
+              <img
+                src={podcast.image || placeholderImage}
+                alt={podcast.title}
+                className="w-full h-56 object-cover rounded-lg"
+              />
+              <div className="mt-4">
+                <p className="text-sm font-bold text-gray-400">#{index + 1}</p>
+                <h2 className="text-md text-gray-300 mt-2">{podcast.title}</h2>
+                <p className="text-sm text-gray-400 mt-1">
                   {podcast.publisher}
-                </span>
+                </p>
               </div>
-
-              <div className="w-24 h-24 relative mx-auto my-4">
-                <Image
-                  src={podcast.image || placeholderImage}
-                  alt={podcast.title}
-                  layout="fill"
-                  objectFit="cover"
-                  className="rounded-full"
-                />
-              </div>
-
-              <h2 className="text-xl font-semibold text-center text-white">
-                {podcast.title}
-              </h2>
-              <p className="text-gray-300 text-sm mt-6 text-center">
-                {podcast.description.substring(0, 100)}...
-              </p>
             </div>
-          </Link>
-        ))}
-      </div>
-
-      <div className="flex justify-center items-center gap-4 mt-8">
-        <button
-          onClick={handlePrevPage}
-          disabled={currentPage === 1}
-          className={`px-4 py-2 rounded-lg ${
-            currentPage === 1
-              ? "bg-gray-500 text-white cursor-not-allowed"
-              : "bg-blue-800 text-white hover:bg-blue-950"
-          }`}
+          ))}
+        </div>
+      ) : (
+        <div
+          className="bg-gray-800 bg-opacity-90 rounded-lg shadow-lg p-4 overflow-x-auto"
+          style={{ backdropFilter: "blur(10px)" }}
         >
-          Previous
-        </button>
-        <span className="text-white font-medium">
-          Page {currentPage} of {totalPages}
-        </span>
-        <button
-          onClick={handleNextPage}
-          disabled={currentPage === totalPages}
-          className={`px-4 py-2 rounded-lg ${
-            currentPage === totalPages
-              ? "bg-gray-500 text-white cursor-not-allowed"
-              : "bg-blue-800 text-white hover:bg-blue-950"
-          }`}
-        >
-          Next
-        </button>
-      </div>
+          <table className="min-w-full table-auto border-collapse">
+            <thead>
+              <tr className="bg-gray-900 text-white">
+                <th className="px-4 py-2 text-left">Rank</th>
+                <th className="px-4 py-2 text-left">Podcast</th>
+                <th className="px-4 py-2 text-left">Publisher</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rankings.map((podcast, index) => (
+                <tr
+                  key={podcast.id}
+                  onClick={() =>
+                    (window.location.href = `/podcast/${podcast.id}`)
+                  }
+                  className={`hover:bg-gray-700 cursor-pointer ${
+                    index % 2 === 0 ? "bg-gray-800" : "bg-gray-700"
+                  }`}
+                >
+                  <td className="px-4 py-2">{index + 1}</td>
+                  <td className="px-4 py-2 flex items-center space-x-4">
+                    <img
+                      src={podcast.image || placeholderImage}
+                      alt={podcast.title}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <span>{podcast.title}</span>
+                  </td>
+                  <td className="px-4 py-2">{podcast.publisher}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Charts;
+export default Rankings;
