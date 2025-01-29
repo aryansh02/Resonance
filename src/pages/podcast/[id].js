@@ -373,44 +373,48 @@ export default function PodcastDetails() {
         <h2 className="text-2xl font-bold mb-6 text-sky-400">
           Reviews and Ratings
         </h2>
-        <div className="mb-6">
+
+        <div className="space-y-6 max-w-3xl">
           {reviews.length > 0 ? (
             reviews.map((review, index) => (
               <div
                 key={index}
-                className="mb-4 p-4 bg-gray-800 bg-opacity-50 rounded-lg"
+                className="p-6 bg-blue-900 bg-opacity-30 rounded-xl shadow-md border border-blue-500"
               >
-                <p className="text-lg text-gray-300">{review.reviewText}</p>
-                <p className="text-sm text-yellow-400">
-                  Rating: {review.rating}/5
+                <p className="text-lg text-white">{review.reviewText}</p>
+                <p className="text-sm font-semibold text-yellow-400 mt-2">
+                  ⭐ {review.rating}/5
                 </p>
               </div>
             ))
           ) : (
-            <p className="text-gray-500 italic">No reviews yet.</p>
+            <p className="text-gray-400 italic">No reviews yet.</p>
           )}
         </div>
-        <div className="p-4 bg-gray-800 rounded-lg">
+
+        <div className="mt-8 p-6 bg-blue-900 bg-opacity-30 rounded-xl shadow-md border border-blue-500 max-w-3xl">
           <textarea
             value={newReview}
             onChange={(e) => setNewReview(e.target.value)}
             placeholder="Write your review here..."
-            className="w-full p-4 mb-4 bg-gray-700 text-white rounded-lg"
+            className="w-full p-4 mb-4 bg-blue-900 bg-opacity-30 text-white rounded-lg border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           />
+
           <select
             value={rating}
             onChange={(e) => setRating(e.target.value)}
-            className="w-full p-4 mb-4 bg-gray-700 text-white rounded-lg"
+            className="w-full p-3 bg-blue-900 bg-opacity-30 text-white rounded-lg border border-gray-600 focus:ring-2 focus:ring-blue-500 focus:outline-none"
           >
             {[0, 1, 2, 3, 4, 5].map((value) => (
               <option key={value} value={value}>
-                {value}
+                {value} ⭐
               </option>
             ))}
           </select>
+
           <button
             onClick={handleAddReview}
-            className="px-6 py-3 bg-green-600 rounded-lg text-white hover:bg-green-800"
+            className="mt-4 w-full py-3 text-white font-bold rounded-lg bg-gradient-to-r from-blue-600 to-blue-800 hover:opacity-80 transition duration-300"
           >
             Submit Review
           </button>

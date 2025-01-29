@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { Particles } from "@tsparticles/react";
-import { loadFull } from "@tsparticles/engine";
 import { Bar, Pie, Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -95,25 +93,50 @@ const Analytics = () => {
 
   
   useEffect(() => {
-    if (!router.isReady) {
-      return;
-    }
+    if (!router.isReady) return;
   
     const { display_name, email, image_url } = router.query;
-  
-    console.log("Router query parameters:", router.query);
-  
     if (!display_name || !email) {
-      
       router.replace("/analyticsAccess");
     } else {
-      
       setUser({
         display_name,
         email,
         image_url: image_url || null,
       });
     }
+  
+    const createParticle = () => {
+      const particle = document.createElement("div");
+      particle.classList.add("neon-particle");
+  
+      const size = Math.random() * 5 + 3;
+      particle.style.width = `${size}px`;
+      particle.style.height = `${size}px`;
+  
+      const pageHeight = document.documentElement.scrollHeight; 
+      particle.style.top = `${Math.random() * pageHeight}px`;
+      particle.style.left = `${Math.random() * 100}vw`;
+      particle.style.animationDuration = `${Math.random() * 5 + 3}s`;
+  
+      document.body.appendChild(particle); 
+  
+      setTimeout(() => {
+        if (particle.parentNode) {
+          particle.remove();
+        }
+      }, 8000);
+    };
+  
+    
+    if (!document.querySelector(".neon-particle")) {
+      for (let i = 0; i < 50; i++) {
+        setTimeout(createParticle, i * 150);
+      }
+    }
+  
+    const interval = setInterval(createParticle, 1000);
+    return () => clearInterval(interval);
   }, [router.isReady, router.query]);
   
   if (!user) {
@@ -355,63 +378,63 @@ const Analytics = () => {
   };
 
   return (
-    <div className="relative min-h-screen text-white bg-black">
-    
-    <Particles
-  id="tsparticles"
-  init={loadFull}
-  options={{
-    fullScreen: { enable: false },
-    background: {
-      color: "#000000", 
-    },
-    particles: {
-      number: {
-        value: 80, 
-        density: { enable: true, area: 800 },
-      },
-      color: { value: "#ffffff" }, 
-      shape: { type: "circle" },
-      opacity: {
-        value: 0.8,
-        random: false,
-      },
-      size: {
-        value: 3,
-        random: true,
-      },
-      move: {
-        enable: true,
-        speed: 1.5,
-        direction: "none",
-        outModes: "out",
-      },
-      links: {
-        enable: true, 
-        distance: 150,
-        color: "#ffffff",
-        opacity: 0.4,
-      },
-    },
-    interactivity: {
-      events: {
-        onHover: { enable: true, mode: "repulse" },
-        onClick: { enable: true, mode: "push" },
-      },
-      modes: {
-        repulse: { distance: 100 },
-        push: { quantity: 4 },
-      },
-    },
-  }}
-  className="absolute inset-0 w-full h-full"
-/>
+    <div className="min-h-screen text-white flex justify-center animated-bg">
+  <div className="w-full max-w-screen-xl px-6">
+  <div className="neon-border"></div>
+  <style jsx global>{`
+  @keyframes neonGlow {
+    0% { text-shadow: 0 0 5px #00FF7F, 0 0 15px #00FF7F; }
+    100% { text-shadow: 0 0 10px #00FF7F, 0 0 25px #00FF7F; }
+  }
 
+  .neon-text {
+    animation: neonGlow 2s infinite alternate ease-in-out;
+    color: #00FF7F;
+    text-align: center;
+    font-weight: bold;
+    transition: text-shadow 0.3s ease-in-out;
+  }
 
-      <header className="text-center mb-16 mt-16">
-        <h1 className="text-4xl font-bold">Resonance Analytics</h1>
-      </header>
+  .neon-text:hover {
+    text-shadow: 0 0 15px #00FF7F, 0 0 35px #00FF7F;
+  }
 
+  @keyframes floatParticles {
+    0% { transform: translateY(0px) scale(1); opacity: 0.6; }
+    50% { transform: translateY(-30px) scale(1.2); opacity: 1; }
+    100% { transform: translateY(0px) scale(1); opacity: 0.6; }
+  }
+
+  .animated-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  min-height: 100%;
+  height: auto;
+  background: black;
+  overflow: hidden;
+  z-index: -1;
+}
+
+  .neon-particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    background: #00FF7F;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #00FF7F, 0 0 15px #00FF7F;
+    animation: floatParticles 6s infinite ease-in-out;
+  }
+
+  .neon-particle:nth-child(odd) {
+    animation-duration: 5s;
+    background: #00FFFF;
+    box-shadow: 0 0 8px #00FFFF, 0 0 15px #00FFFF;
+  }
+`}</style>
+
+<h1 className="text-4xl font-bold neon-text mb-16 mt-24">Analytics</h1>
       <section className="mb-12 grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="p-6 bg-gray-800 bg-opacity-70 rounded-3xl shadow-md hover:shadow-lg transition">
           <h2 className="text-xl font-bold mb-2">Total Listeners</h2>
@@ -445,7 +468,7 @@ const Analytics = () => {
         },
       }}
     />
-    <p className="text-gray-400 mt-4">Audience growth trends over the last 6 months, with a 5.2% increase this month 📈.</p>
+    <p className="text-gray-400 mt-24">Audience growth trends over the last 6 months, with a 5.2% increase this month 📈.</p>
    
   </div>
   <div className="bg-gray-900 bg-opacity-70 p-6 rounded-3xl shadow-md hover:shadow-lg transition flex flex-col">
@@ -932,6 +955,7 @@ const Analytics = () => {
       <footer className="mt-12 text-center text-gray-300">
         <p>&copy; 2024 Resonance. All Rights Reserved.</p>
       </footer>
+    </div>
     </div>
   );
 };

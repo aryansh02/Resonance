@@ -17,7 +17,6 @@ export default function PodcastListing() {
   ];
 
   const [podcastsByGenre, setPodcastsByGenre] = useState({});
-  const [sliderPositions, setSliderPositions] = useState({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -41,12 +40,6 @@ export default function PodcastListing() {
         fetchedData[section.genre] = data;
       }
       setPodcastsByGenre(fetchedData);
-
-      const initialPositions = {};
-      for (const section of sections) {
-        initialPositions[section.genre] = 0;
-      }
-      setSliderPositions(initialPositions);
     } catch (err) {
       setError(err.message);
     } finally {
@@ -57,20 +50,6 @@ export default function PodcastListing() {
   useEffect(() => {
     fetchPodcastsByGenre();
   }, []);
-
-  const slideNext = (genre) => {
-    setSliderPositions((prev) => ({
-      ...prev,
-      [genre]: Math.min(prev[genre] + 1, 1),
-    }));
-  };
-
-  const slidePrev = (genre) => {
-    setSliderPositions((prev) => ({
-      ...prev,
-      [genre]: Math.max(prev[genre] - 1, 0),
-    }));
-  };
 
   if (loading) {
     return (
@@ -107,13 +86,12 @@ export default function PodcastListing() {
       className="p-8 min-h-screen text-white space-y-16"
       style={{ backgroundColor: "#1c1c1c" }}
     >
-      <div className="mb-20">
-        <h1 className="text-3xl font-bold ml-4">Browse</h1>
+      <div className="mb-20 mt-16 flex justify-center">
+        <h1 className="text-4xl font-bold text-center">Browse</h1>
       </div>
 
       {sections.map((section) => {
         const podcasts = podcastsByGenre[section.genre] || [];
-        const position = sliderPositions[section.genre] || 0;
 
         const groupedPodcasts = [];
         for (let i = 0; i < podcasts.length; i += 10) {
@@ -129,22 +107,8 @@ export default function PodcastListing() {
               {section.name}
             </h2>
             <div className="relative">
-              {position > 0 && (
-                <button
-                  className="absolute top-[50%] left-0 transform -translate-y-[50%] bg-gray-700 hover:bg-gray-600 text-white p-3 rounded-full shadow-lg"
-                  onClick={() => slidePrev(section.genre)}
-                  style={{ height: "40px", width: "40px" }}
-                >
-                  <AiOutlineArrowLeft />
-                </button>
-              )}
               <div className="overflow-hidden">
-                <div
-                  className="flex transition-transform"
-                  style={{
-                    transform: `translateX(-${position * 100}%)`,
-                  }}
-                >
+                <div className="flex flex-wrap gap-4">
                   {groupedPodcasts.map((group, groupIndex) => (
                     <div
                       key={groupIndex}
@@ -185,15 +149,6 @@ export default function PodcastListing() {
                   ))}
                 </div>
               </div>
-              {position < groupedPodcasts.length - 1 && (
-                <button
-                  className="absolute top-[50%] right-0 transform -translate-y-[50%] bg-gray-700 hover:bg-gray-600 text-white p-3 rounded-full shadow-lg"
-                  onClick={() => slideNext(section.genre)}
-                  style={{ height: "40px", width: "40px" }}
-                >
-                  <AiOutlineArrowRight />
-                </button>
-              )}
             </div>
           </div>
         );
