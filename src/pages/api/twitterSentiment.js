@@ -2,18 +2,23 @@ import axios from "axios";
 import vader from "vader-sentiment";
 
 export default async function handler(req, res) {
-  const { query } = req.query;
-  if (!query) {
-    return res.status(400).json({ error: "Query parameter is missing" });
+  const { podcastTitle, guestName } = req.query;
+  if (!podcastTitle) {
+    return res.status(400).json({ error: "Podcast title is required" });
   }
+
+  const searchQuery = `"${podcastTitle}" OR #${podcastTitle.replace(
+    /\s+/g,
+    ""
+  )} OR "${guestName}"`;
 
   try {
     const response = await axios.get(
       `https://api.twitter.com/2/tweets/search/recent`,
       {
         params: {
-          query: query,
-          max_results: 10,
+          query: searchQuery,
+          max_results: 15, // Fetch more relevant tweets
         },
         headers: {
           Authorization: `Bearer ${process.env.TWITTER_BEARER_TOKEN}`,

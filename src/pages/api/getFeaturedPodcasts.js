@@ -3,10 +3,10 @@ import { getSpotifyToken } from "../../lib/spotify";
 
 export default async function handler(req, res) {
   try {
-    // Fetch the Spotify API token
+    
     const token = await getSpotifyToken();
 
-    // Fetch Featured Playlists from Spotify
+    
     const response = await fetch(
       "https://api.spotify.com/v1/browse/featured-playlists?limit=10",
       {
@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 
     const data = await response.json();
 
-    // Extract podcast data
+    
     const podcasts = data.playlists.items.map((item) => ({
       id: item.id,
       title: item.name,

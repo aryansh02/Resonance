@@ -88,23 +88,13 @@ const Analytics = () => {
   const [user, setUser] = useState(null);
   const [smartLink, setSmartLink] = useState("");
   const [copied, setCopied] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isRedirecting, setIsRedirecting] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); 
 
   
   useEffect(() => {
-    if (!router.isReady) return;
-  
-    const { display_name, email, image_url } = router.query;
-    if (!display_name || !email) {
-      router.replace("/analyticsAccess");
-    } else {
-      setUser({
-        display_name,
-        email,
-        image_url: image_url || null,
-      });
-    }
+    
+    setUser({ display_name: "Guest", email: null, image_url: null });
+    setIsLoading(false);
   
     const createParticle = () => {
       const particle = document.createElement("div");
@@ -137,16 +127,15 @@ const Analytics = () => {
   
     const interval = setInterval(createParticle, 1000);
     return () => clearInterval(interval);
-  }, [router.isReady, router.query]);
+  }, []);
   
-  if (!user) {
+  if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center text-white bg-black">
-        <p>Loading...</p>
+        <p>Loading Analytics...</p>
       </div>
     );
   }
-  console.log("Logged-in User in Analytics Page:", user);
 
   
   const generateSmartLink = () => {

@@ -18,7 +18,7 @@ const Dashboard = () => {
 
   return user ? (
     <div className="min-h-screen bg-gradient-to-b from-gray-900 via-gray-800 to-black text-white p-8">
-      {/* Header */}
+      
       <header className="flex justify-between items-center mb-12">
         <h1 className="text-4xl font-extrabold">Welcome, {user.email}</h1>
         <button
@@ -29,7 +29,7 @@ const Dashboard = () => {
         </button>
       </header>
 
-      {/* User Metrics Section */}
+      
       <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
         <div className="p-6 bg-gradient-to-r from-blue-500 to-purple-500 rounded-xl shadow-lg text-center hover:scale-105 transition">
           <h3 className="text-xl font-bold mb-2">Bookmarks</h3>
@@ -45,9 +45,9 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Main Content */}
+      
       <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-        {/* Account Information */}
+        
         <div className="p-6 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition flex flex-col justify-between">
           <div>
             <h2 className="text-2xl font-bold mb-4">Account Information</h2>
@@ -63,7 +63,7 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Settings */}
+        
         <div className="p-6 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition flex flex-col justify-between">
           <div>
             <h2 className="text-2xl font-bold mb-4">Settings</h2>
@@ -74,7 +74,7 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Bookmarks */}
+        
         <div className="p-6 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition flex flex-col justify-between">
           <div>
             <h2 className="text-2xl font-bold mb-4">Bookmarks</h2>
@@ -88,7 +88,7 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Help & Support */}
+        
         <div className="p-6 bg-gradient-to-br from-gray-800 to-gray-900 rounded-xl shadow-lg hover:shadow-2xl hover:scale-105 transition flex flex-col justify-between">
           <div>
             <h2 className="text-2xl font-bold mb-4">Help & Support</h2>
@@ -100,7 +100,7 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Footer */}
+      
       <footer className="text-center mt-24 pt-8 pb-4 border-t border-gray-700">
         <p className="text-lg font-semibold">Developed by Aryansh</p>
         <p className="text-gray-400 mt-2">

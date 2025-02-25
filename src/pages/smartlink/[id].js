@@ -8,11 +8,11 @@ export default function SmartLinkRedirect() {
   const { id } = router.query;
 
   useEffect(() => {
-    if (!router.isReady || !id) return; // Wait until the router is ready and `id` is available
+    if (!router.isReady || !id) return; 
 
     async function fetchSmartLink() {
       try {
-        console.log("Fetching SmartLink with ID:", id); // Debugging log
+        console.log("Fetching SmartLink with ID:", id); 
 
         const docRef = doc(db, "smartLinks", id);
         const docSnap = await getDoc(docRef);
@@ -32,10 +32,10 @@ export default function SmartLinkRedirect() {
           return;
         }
 
-        // Capture tracking details
+      
         const referrer = document.referrer || "Direct";
         const userAgent = navigator.userAgent;
-        const trackingParams = { ...router.query }; // Capture all query parameters
+        const trackingParams = { ...router.query }; 
 
         console.log("Redirecting to URL:", redirectUrl);
         console.log("Tracking details:", {
@@ -44,7 +44,7 @@ export default function SmartLinkRedirect() {
           trackingParams,
         });
 
-        // Update Firestore with click tracking
+        
         await updateDoc(docRef, {
           clicks: arrayUnion({
             timestamp: new Date().toISOString(),
@@ -54,7 +54,7 @@ export default function SmartLinkRedirect() {
           }),
         });
 
-        // Perform the redirect
+        
         window.location.href = redirectUrl;
       } catch (error) {
         console.error("Error during SmartLink redirect:", error);
